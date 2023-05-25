@@ -13,7 +13,7 @@ const createUser = asyncHandler(async (req, res) => {
       res.status(200).send({
         message: "User created",
         status: "200",
-        data: [{ ...userData }],
+        data: [{...userData, password: ''}],
       });
     } catch (err) {
       res.json({
