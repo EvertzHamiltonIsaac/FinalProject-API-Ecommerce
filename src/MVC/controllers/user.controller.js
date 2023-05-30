@@ -51,10 +51,10 @@ const loginUser = asyncHandler(async (req, res) => {
 });
 
 //Get all users
-const getUser = asyncHandler(async (req, res) => {
+const getAllUsers = asyncHandler(async (req, res) => {
   try {
     const getUser = await User.find();
-    res.json(getUser);
+    res.json(getAllUsers);
   } catch (error) {
     throw new Error(error);
   }
@@ -93,4 +93,10 @@ const deleteUser = asyncHandler(async (req, res) => {
     throw new Error(error);
   }
 });
-module.exports = { registerUser, loginUser, getUser, deleteUser, updateUser };
+module.exports = {
+  registerUser,
+  loginUser,
+  getAllUsers,
+  deleteUser,
+  updateUser,
+};
