@@ -3,8 +3,11 @@ const router = express.Router();
 
 //? Controllers
 
-const {createUser} = require("../controllers/user.controller")
+const {registerUser, loginUser} = require("../controllers/user.controller")
 
-router.post('/auth/register', createUser);
+// TODO: Auth
+router.post('/auth/register', registerUser);
+router.post('/auth/login', loginUser);
+
 
 module.exports = router;
