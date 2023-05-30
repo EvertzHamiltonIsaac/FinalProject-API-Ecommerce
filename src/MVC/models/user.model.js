@@ -35,6 +35,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  role: {
+    type: String,
+    default: 'user'
+  }
 });
 
 //? Encrypting Password
@@ -54,6 +58,11 @@ userSchema.pre("save", async function(next){
 
   }
 });
+
+//? Compare Password
+userSchema.methods.isPasswordMatched = async function(enteredPassword){
+  return await bcrypt.compare(enteredPassword, this.password);
+}
 
 //Export the model
 module.exports = mongoose.model("User", userSchema);
