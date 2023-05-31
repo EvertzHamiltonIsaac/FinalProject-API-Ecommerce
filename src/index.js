@@ -8,6 +8,7 @@ const DBConnect = require("./config/DBConnection");
 const bodyParser = require("body-parser");
 const app = express();
 const dotenv = require("dotenv").config();
+const morgan = require("morgan")
 const { notFound, errorHandler } = require("./middlewares/error.middleware");
 
 //* Number of PORT
@@ -17,6 +18,7 @@ const port = process.env.PORT || 9000;
 DBConnect();
 
 //* Configuration of app, this enable or make that the aplication use json files.
+app.use(morgan('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
