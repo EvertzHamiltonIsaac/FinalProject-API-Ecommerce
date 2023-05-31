@@ -1,5 +1,6 @@
 //* Routers
 const userRouter = require("./MVC/routes/userRouter");
+const productRouter = require("./MVC/routes/productRouter");
 //* Routers
 
 const express = require("express");
@@ -22,6 +23,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 //* baseURL = /api/v1/
 const baseURL = "/api/v1";
 app.use(`${baseURL}`, userRouter);
+app.use(`${baseURL}`, productRouter);
 
 //* Handle Errors using middlewares.
 app.use(notFound);
