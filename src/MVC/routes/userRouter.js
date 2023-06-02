@@ -19,13 +19,16 @@ const {
 // TODO: Auth
 router.post("/auth/register", registerUser);
 router.post("/auth/login", loginUser);
-router.get("/User/getAllUsers", getAllUsers);
-router.get("/User/getUser/:id", authMiddleware, isAdmin, getUser);
-router.get("/User/refreshToken", handleRefreshToken);
-router.get("/User/Logout", logout);
-router.delete("/User/deleteUser/:id", deleteUser);
-router.put("/User/updateUser/updateUser", authMiddleware, isAdmin, updateUser);
-router.put("/User/blockUser/:id", authMiddleware, isAdmin, blockUser);
-router.put("/User/unblockUser/:id", authMiddleware, isAdmin, unblockUser);
+router.get("/user/Logout", logout);
+
+//TODO: User
+router.get("/user/", getAllUsers);
+router.get("/user/:id", authMiddleware, isAdmin, getUser);
+router.put("/user/updateUser", authMiddleware, isAdmin, updateUser);
+router.delete("/user/deleteUser/:id", deleteUser);
+
+router.get("/user/refreshToken", handleRefreshToken);
+router.put("/user/blockUser/:id", authMiddleware, isAdmin, blockUser);
+router.put("/user/unblockUser/:id", authMiddleware, isAdmin, unblockUser);
 
 module.exports = router;

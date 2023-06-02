@@ -6,7 +6,7 @@ const validateMongoId = require("../../utils/validateMongoId");
 const jwt = require("jsonwebtoken");
 
 // TODO: Controllers For Auth.
-//Register
+//* Register
 const registerUser = asyncHandler(async (req, res) => {
   const body = req.body;
   const findUser = await User.findOne({ email: body.email });
@@ -30,8 +30,7 @@ const registerUser = asyncHandler(async (req, res) => {
     throw new Error("User Already Exists");
   }
 });
-
-//Login
+//* Login
 const loginUser = asyncHandler(async (req, res) => {
   const body = req.body;
 
@@ -47,26 +46,30 @@ const loginUser = asyncHandler(async (req, res) => {
         new: true,
       }
     );
+
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       maxAge: 18 * 21 * 24 * 60 * 1000,
     });
+
     res.status(202).send({
       message: `Welcome to Ginger ${findUser.firstName}`,
       data: { ...findUser?._doc, password: "" },
       sesstionToken: TokenGenerator(findUser?._doc._id),
     });
+
   } else {
+
     res.status(401).send({
       fields: {
         email: "Email@gmail.com",
         password: "password",
       },
     });
+
   }
 });
-
-//Get all users
+//* Get all users
 const getAllUsers = asyncHandler(async (req, res) => {
   try {
     const getUser = await User.find();
@@ -75,8 +78,7 @@ const getAllUsers = asyncHandler(async (req, res) => {
     throw new Error(error);
   }
 });
-
-//Handle refresh token
+//* Handle refresh token
 const handleRefreshToken = asyncHandler(async (req, res) => {
   const cookie = req.cookies;
   if (!cookie?.refreshToken) {
@@ -94,11 +96,10 @@ const handleRefreshToken = asyncHandler(async (req, res) => {
       throw new Error("There is something wrong with refresh token");
     }
     const accessToken = TokenGenerator(findUser?._id);
-    res.json({ accessToken });
+    res.status(200).send({accessToken});
   });
 });
-
-//Logout
+//* Logout
 const logout = asyncHandler(async (req, res) => {
   const cookie = req.cookies;
   if (!cookie?.refreshToken) {
@@ -120,7 +121,7 @@ const logout = asyncHandler(async (req, res) => {
   });
   res.sendStatus(204); //forbiden
 });
-//Update User
+// *Update User
 const updateUser = asyncHandler(async (req, res) => {
   console.log(req.user);
   const { _id } = req.user;
@@ -138,39 +139,36 @@ const updateUser = asyncHandler(async (req, res) => {
         new: true,
       }
     );
-    res.json(updateUser);
+    res.status(200).send(updateUser);
   } catch (error) {
     throw new Error(error);
   }
 });
-
-//Get a Single User
+//* Get a Single User
 const getUser = asyncHandler(async (req, res) => {
   console.log(req.params);
   const { id } = req.params;
   validateMongoId(id);
   try {
     const getaUser = await User.findById(id);
-    res.json({ getaUser });
+    res.status(302).send(getaUser);
   } catch (error) {
-    throw new Error(error);
+    res.status(404).send({message: error.message});
   }
 });
-
-//Delete User
+//* Delete User
 const deleteUser = asyncHandler(async (req, res) => {
   console.log(req.params);
   const { id } = req.params;
   validateMongoId(id);
   try {
     const deleteUser = await User.findByIdAndDelete(id);
-    res.json({ deleteUser });
+    res.status(200).send(deleteUser);
   } catch (error) {
-    throw new Error(error);
+    res.status(400).send({message: error.message});
   }
 });
-
-//Block and Unblock a User
+//* Block and Unblock a User
 const blockUser = asyncHandler(async (req, res) => {
   const { id } = req.params;
   validateMongoId(id);
@@ -184,16 +182,16 @@ const blockUser = asyncHandler(async (req, res) => {
         new: true,
       }
     );
-    res.json(blockusr);
+    res.status(200).send(blockusr);
   } catch (error) {
-    throw new Error(error);
+    res.status(404).send({message: error.message});
   }
 });
 const unblockUser = asyncHandler(async (req, res) => {
   const { id } = req.params;
   validateMongoId(id);
   try {
-    const blockusr = await User.findByIdAndUpdate(
+    const unblockusr = await User.findByIdAndUpdate(
       id,
       {
         isBlocked: false,
@@ -202,12 +200,11 @@ const unblockUser = asyncHandler(async (req, res) => {
         new: true,
       }
     );
-    res.json(blockusr);
+    res.status(200).send(unblockusr);
   } catch (error) {
-    throw new Error(error);
+    res.status(404).send({message: error.message});
   }
 });
-
 module.exports = {
   registerUser,
   loginUser,
