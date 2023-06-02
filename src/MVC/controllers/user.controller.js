@@ -54,8 +54,14 @@ const loginUser = asyncHandler(async (req, res) => {
 
     res.status(202).send({
       message: `Welcome to Ginger ${findUser.firstName}`,
-      data: { ...findUser?._doc, password: "" },
-      sesstionToken: TokenGenerator(findUser?._doc._id),
+      data: {
+        id: findUser?._doc._id,
+        firstName: findUser?._doc.firstName,
+        lastName: findUser?._doc.lastName,
+        email: findUser?._doc.email,
+        phone: findUser?._doc.phone,
+      },
+      sessionToken: TokenGenerator(findUser?._doc._id),
     });
 
   } else {
@@ -205,6 +211,7 @@ const unblockUser = asyncHandler(async (req, res) => {
     res.status(404).send({message: error.message});
   }
 });
+
 module.exports = {
   registerUser,
   loginUser,
