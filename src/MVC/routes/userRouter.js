@@ -19,7 +19,7 @@ const {
 // TODO: Auth
 router.post("/auth/register", registerUser);
 router.post("/auth/login", loginUser);
-router.get("/user/Logout", logout);
+router.get("/user/logout", logout);
 
 //TODO: User
 router.get("/user/", getAllUsers);

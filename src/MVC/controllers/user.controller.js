@@ -1,5 +1,4 @@
 const { TokenGenerator } = require("../../config/JwtToken/jwtToken");
-const { TokenReGenerator } = require("../../config/JwtToken/refreshToken");
 const User = require("../models/user.model");
 const asyncHandler = require("express-async-handler");
 const validateMongoId = require("../../utils/validateMongoId");
@@ -14,17 +13,16 @@ const registerUser = asyncHandler(async (req, res) => {
   if (!findUser) {
     const userData = { ...body };
     try {
+
       const newUser = await User.create(userData);
+
       res.status(201).send({
         message: "User created",
         status: "200",
-        data: [{ ...userData, password: "" }],
+        data: [{ ...userData, password: newUser.password}],
       });
     } catch (err) {
-      res.json({
-        message: err.message,
-        success: false,
-      });
+      res.status(400).send({message: err.message});
     }
   } else {
     throw new Error("User Already Exists");
@@ -36,7 +34,7 @@ const loginUser = asyncHandler(async (req, res) => {
 
   const findUser = await User.findOne({ email: body.email });
   if (findUser && (await findUser.isPasswordMatched(body.password))) {
-    const refreshToken = await TokenReGenerator(findUser?.id);
+    const refreshToken = await TokenGenerator(findUser?.id, "1.1h");
     const updateUser = await User.findByIdAndUpdate(
       findUser.id,
       {
@@ -61,7 +59,7 @@ const loginUser = asyncHandler(async (req, res) => {
         email: findUser?._doc.email,
         phone: findUser?._doc.phone,
       },
-      sessionToken: TokenGenerator(findUser?._doc._id),
+      sessionToken: TokenGenerator(findUser?._doc._id, "1h"),
     });
 
   } else {
@@ -101,7 +99,7 @@ const handleRefreshToken = asyncHandler(async (req, res) => {
     if (err || user.id !== decoded.id) {
       throw new Error("There is something wrong with refresh token");
     }
-    const accessToken = TokenGenerator(findUser?._id);
+    const accessToken = TokenGenerator(findUser?._id, "1h");
     res.status(200).send({accessToken});
   });
 });
