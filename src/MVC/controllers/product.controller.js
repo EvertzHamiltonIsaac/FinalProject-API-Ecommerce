@@ -50,6 +50,17 @@ const getAllProducts = asyncHandler (async (req, res) => {
             query = query.select('-__v');
         }
 
+        //? pagination 
+        const page = req.query.page;
+        const limit = req.query.limit;
+        const skip = (page - 1) * limit;
+        query = query.skip(skip).limit(limit);
+
+        if(req.query.page){
+            const productCount = await Product.countDocuments();
+            if(skip >= productCount)throw new Error ('This Page Does not Exists.')
+        }
+        console.log(page, limit, skip);
 
         const product = await query;
         res.status(302).send(product);
@@ -80,26 +91,6 @@ const deleteProduct = asyncHandler (async (req, res) => {
         res.status(200).send(deletedProduct);
     } catch (error) {
         res.status(400).send({message: error.message});
-    }
-});
-const getsAllProducts = asyncHandler (async (req, res) => {
-    try {
-        const queryOj = {...req.query};
-        const excludeFields = ['page','sort','limit','fields'];
-        excludeFields.forEach(excluded => delete queryOj(excluded))
-        
-        let queryStr = JSON.stringify(queryOj);
-        queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
-
-
-        const query = Product.find(JSON.parse(queryStr))
-        const allProduct = await Product.find({
-            brand: req.query.brand,
-            category: req.query.category
-        });
-        res.status(302).send(allProduct);
-    } catch(error) {
-        res.status(404).send({message: error.message});
     }
 });
 
