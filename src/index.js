@@ -10,8 +10,9 @@ const app = express();
 const dotenv = require("dotenv").config();
 const morgan = require("morgan")
 const { notFound, errorHandler } = require("./middlewares/error.middleware");
+const cookieParser = require("cookie-parser");
 
-//* Number of PORT
+//* PORT Number
 const port = process.env.PORT || 9000;
 
 //* Connection With DataBase
@@ -21,6 +22,7 @@ DBConnect();
 app.use(morgan('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cookieParser());
 
 //* baseURL = /api/v1/
 const baseURL = "/api/v1";
