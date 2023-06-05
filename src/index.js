@@ -1,5 +1,6 @@
 //* Routers
 const userRouter = require("./MVC/routes/userRouter");
+const productRouter = require("./MVC/routes/productRouter");
 //* Routers
 
 const express = require("express");
@@ -7,6 +8,7 @@ const DBConnect = require("./config/DBConnection");
 const bodyParser = require("body-parser");
 const app = express();
 const dotenv = require("dotenv").config();
+const morgan = require("morgan")
 const { notFound, errorHandler } = require("./middlewares/error.middleware");
 const cookieParser = require("cookie-parser");
 
@@ -17,6 +19,7 @@ const port = process.env.PORT || 9000;
 DBConnect();
 
 //* Configuration of app, this enable or make that the aplication use json files.
+app.use(morgan('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -24,6 +27,7 @@ app.use(cookieParser());
 //* baseURL = /api/v1/
 const baseURL = "/api/v1";
 app.use(`${baseURL}`, userRouter);
+app.use(`${baseURL}`, productRouter);
 
 //* Handle Errors using middlewares.
 app.use(notFound);
