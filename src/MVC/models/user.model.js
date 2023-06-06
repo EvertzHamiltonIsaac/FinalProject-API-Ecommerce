@@ -1,5 +1,6 @@
 const mongoose = require("mongoose"); // Erase if already required
 const bcrypt = require("bcrypt");
+const crypto = require("crypto");
 
 // Declare the Schema of the Mongo model
 const userSchema = new mongoose.Schema(
@@ -53,6 +54,9 @@ const userSchema = new mongoose.Schema(
     refreshToken: {
       type: String,
     },
+    passwordChangedAt: Date,
+    passwordResetToken: String,
+    passwordResetExpires: Date,
   },
   {
     timestamps: true,
@@ -62,6 +66,10 @@ const userSchema = new mongoose.Schema(
 //? Encrypting Password
 userSchema.pre("save", async function (next) {
   try {
+    if (!this.isModified("password")) {
+      next();
+    }
+
     if (!process.env.SALT)
       return console.log("SALT Its not defined on environment file");
 
@@ -77,6 +85,16 @@ userSchema.pre("save", async function (next) {
 //? Compare Password
 userSchema.methods.isPasswordMatched = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
+};
+
+userSchema.methods.createPasswordResetToken = async function () {
+  const resettoken = crypto.randomBytes(32).toString("hex");
+  this.passwordResetToken = crypto
+    .createHash("sha256")
+    .update(resettoken)
+    .digest("hex");
+  this.passwordResetExpires = Date.now() + 30 * 60 * 1000; // 10 minutes
+  return resettoken;
 };
 
 //Export the model

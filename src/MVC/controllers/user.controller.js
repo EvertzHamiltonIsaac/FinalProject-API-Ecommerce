@@ -3,6 +3,8 @@ const User = require("../models/user.model");
 const asyncHandler = require("express-async-handler");
 const validateMongoId = require("../../utils/validateMongoId");
 const jwt = require("jsonwebtoken");
+const sendEmail = require("../controllers/email.controller");
+const crypto = require("crypto");
 
 // TODO: Controllers For Auth.
 //* Register
@@ -13,16 +15,15 @@ const registerUser = asyncHandler(async (req, res) => {
   if (!findUser) {
     const userData = { ...body };
     try {
-
       const newUser = await User.create(userData);
 
       res.status(201).send({
         message: "User created",
         status: "200",
-        data: [{ ...userData, password: newUser.password}],
+        data: [{ ...userData, password: newUser.password }],
       });
     } catch (err) {
-      res.status(400).send({message: err.message});
+      res.status(400).send({ message: err.message });
     }
   } else {
     throw new Error("User Already Exists");
@@ -61,16 +62,13 @@ const loginUser = asyncHandler(async (req, res) => {
       },
       sessionToken: TokenGenerator(findUser?._doc._id, "1h"),
     });
-
   } else {
-
     res.status(401).send({
       fields: {
         email: "Email@gmail.com",
         password: "password",
       },
     });
-
   }
 });
 //* Get all users
@@ -100,7 +98,7 @@ const handleRefreshToken = asyncHandler(async (req, res) => {
       throw new Error("There is something wrong with refresh token");
     }
     const accessToken = TokenGenerator(findUser?._id, "1h");
-    res.status(200).send({accessToken});
+    res.status(200).send({ accessToken });
   });
 });
 //* Logout
@@ -157,7 +155,7 @@ const getUser = asyncHandler(async (req, res) => {
     const getaUser = await User.findById(id);
     res.status(302).send(getaUser);
   } catch (error) {
-    res.status(404).send({message: error.message});
+    res.status(404).send({ message: error.message });
   }
 });
 //* Delete User
@@ -169,7 +167,7 @@ const deleteUser = asyncHandler(async (req, res) => {
     const deleteUser = await User.findByIdAndDelete(id);
     res.status(200).send(deleteUser);
   } catch (error) {
-    res.status(400).send({message: error.message});
+    res.status(400).send({ message: error.message });
   }
 });
 //* Block and Unblock a User
@@ -188,7 +186,7 @@ const blockUser = asyncHandler(async (req, res) => {
     );
     res.status(200).send(blockusr);
   } catch (error) {
-    res.status(404).send({message: error.message});
+    res.status(404).send({ message: error.message });
   }
 });
 const unblockUser = asyncHandler(async (req, res) => {
@@ -206,10 +204,67 @@ const unblockUser = asyncHandler(async (req, res) => {
     );
     res.status(200).send(unblockusr);
   } catch (error) {
-    res.status(404).send({message: error.message});
+    res.status(404).send({ message: error.message });
   }
 });
 
+//Update Password
+const updatePassword = asyncHandler(async (req, res) => {
+  const { _id } = req.user;
+  const { password } = req.body;
+  validateMongoId(_id);
+  const user = await User.findById(_id);
+  if (password) {
+    user.password = password;
+    const updatedPassword = await user.save();
+    res.status(200).send(updatedPassword);
+  } else {
+    res.status(304).send(user);
+  }
+});
+
+const forgotPasswordToken = asyncHandler(async (req, res) => {
+  const { email } = req.body;
+  const user = await User.findOne({ email });
+  if (!user) {
+    res.status(400).send({ message: error.message });
+  }
+  try {
+    const token = await user.createPasswordResetToken();
+    await user.save();
+    const resetURL =
+      "Hi, Please follow this link to reset your password. This link is valid till 10 minutes from now. < href='http://127.0.0.1:3000/api/v1/user/updatePassword/${token}'>Click Here</>";
+    const data = {
+      to: email,
+      text: "Hey User",
+      subject: "Forgot Password Link",
+      htm: resetURL,
+    };
+    sendEmail(data);
+    res.status(200).send(token);
+  } catch (error) {
+    res.status(404).send({ message: error.message });
+  }
+});
+
+// Reset Password
+const resetPassword = asyncHandler(async (req, res) => {
+  const { password } = req.body;
+  const { token } = req.params;
+  const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+  const user = await User.findOne({
+    passwordResetToken: hashedToken,
+    passwordResetExpires: { $gt: Date.now() },
+  });
+  if (!user) {
+    res.status(404).send({ message: " Token Expired, Try again later" });
+  }
+  user.password = password;
+  user.passwordResetToken = undefined;
+  user.passwordResetExpires = undefined;
+  await user.save();
+  res.status(200).send(user);
+});
 module.exports = {
   registerUser,
   loginUser,
@@ -221,4 +276,7 @@ module.exports = {
   unblockUser,
   handleRefreshToken,
   logout,
+  updatePassword,
+  forgotPasswordToken,
+  resetPassword,
 };
