@@ -1,5 +1,4 @@
 const Blog = require("../models/blog.model");
-const user = require("../controllers/user.controller");
 const asyncHandler = require("express-async-handler");
 const validateMongoId = require("../../utils/validateMongoId");
 
@@ -37,7 +36,7 @@ const getBlogById = asyncHandler(async (req, res) => {
   const { id } = req.params;
   validateMongoId(id);
   try {
-    const blog = await Blog.findById(id);
+    const blog = await Blog.findById(id).populate("likes").populate("dislikes");
     const updateViews = await Blog.findByIdAndUpdate(
       id,
       {
@@ -48,7 +47,7 @@ const getBlogById = asyncHandler(async (req, res) => {
 
     res.status(302).send({
       message: "Blog Found",
-      data: [{ ...updateViews?._doc }],
+      data: [{ ...blog?._doc }],
     });
   } catch (error) {
     res.status(404).send({ message: error.message });
@@ -85,7 +84,6 @@ const deleteBlog = asyncHandler(async (req, res) => {
   }
 });
 
-
 //? Limpiar Codigo
 const likeBlog = asyncHandler(async (req, res) => {
   const { blogId } = req.body;
@@ -100,12 +98,12 @@ const likeBlog = asyncHandler(async (req, res) => {
   //! check if the user has liked the post
   const isLiked = blog?.isLiked;
 
-  const alreadyDisliked = blog?.dislikes?.find(
+  const alreadyDisliked = Blog?.dislikes?.(
     (userId) => userId?.toString() === loginUserId?.toString()
   );
 
   if (alreadyDisliked) {
-    const blogDisliked = await Blog.findByIdAndUpdate(
+    const blogLiked = await Blog.findByIdAndUpdate(
       blogId,
       {
         $pull: { dislikes: loginUserId },
@@ -114,7 +112,7 @@ const likeBlog = asyncHandler(async (req, res) => {
       { new: true }
     );
 
-    res.status(200).send({blogDisliked});
+    res.status(200).send({blogLiked});
   }
 
   if (isLiked) {
@@ -130,15 +128,71 @@ const likeBlog = asyncHandler(async (req, res) => {
     res.status(200).send({blogLiked});
 
   } else {
-    const blogToggleLiked = await Blog.findByIdAndUpdate(
+    const blogLiked = await Blog.findByIdAndUpdate(
         blogId,
         {
-          $push: { dislikes: loginUserId },
+          $push: { likes: loginUserId },
           isLiked: true,
         },
         { new: true }
       );
-      res.status(200).send({blogToggleLiked});
+      res.status(200).send({blogLiked});
+  }
+});
+
+//? Limpiar Codigo
+const disLikeBlog = asyncHandler(async (req, res) => {
+  const { blogId } = req.body;
+  validateMongoId(blogId);
+
+  //! find the blog
+  const blog = await Blog.findById(blogId);
+
+  //! find the user logged
+  const loginUserId = req?.user?._id;
+
+  //! check if the user has liked the post
+  const isDisLiked = blog?.isDisliked;
+
+  const alreadyLiked = Blog?.likes?.(
+    (userId) => userId?.toString() === loginUserId?.toString()
+  );
+
+  if (alreadyLiked) {
+    const blog = await Blog.findByIdAndUpdate(
+      blogId,
+      {
+        $pull: { likes: loginUserId },
+        isLiked: false,
+      },
+      { new: true }
+    );
+
+    res.status(200).send({blog});
+  }
+
+  if (isDisLiked) {
+    const blog = await Blog.findByIdAndUpdate(
+      blogId,
+      {
+        $pull: { dislikes: loginUserId },
+        isDisliked: false,
+      },
+      { new: true }
+    );
+
+    res.status(200).send({blog});
+
+  } else {
+    const blogLiked = await Blog.findByIdAndUpdate(
+        blogId,
+        {
+          $push: { dislikes: loginUserId },
+          isDisliked: true,
+        },
+        { new: true }
+      );
+      res.status(200).send({blogLiked});
   }
 });
 
@@ -148,5 +202,6 @@ module.exports = {
   updateBlog,
   getBlogById,
   deleteBlog,
-  likeBlog
+  likeBlog,
+  disLikeBlog
 };
