@@ -2,6 +2,7 @@
 const userRouter = require("./MVC/routes/userRouter");
 const productRouter = require("./MVC/routes/productRouter");
 const blogRouter = require("./MVC/routes/blogRouter");
+const brandRouter = require("./MVC/routes/brandRouter");
 //* Routers
 
 const express = require("express");
@@ -29,7 +30,8 @@ app.use(cookieParser());
 const baseURL = "/api/v1";
 app.use(`${baseURL}`, userRouter);
 app.use(`${baseURL}`, productRouter);
-app.use(`${baseURL}`, blogRouter)
+app.use(`${baseURL}`, blogRouter);
+app.use(`${baseURL}`, brandRouter);
 
 
 //* Handle Errors using middlewares.
