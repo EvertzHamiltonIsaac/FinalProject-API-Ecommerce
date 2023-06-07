@@ -2,7 +2,7 @@ const { Timestamp } = require('bson');
 const mongoose = require('mongoose'); // Erase if already required
 
 // Declare the Schema of the Mongo model
-var productSchema = new mongoose.Schema({
+const productSchema = new mongoose.Schema({
     title:{
         type:String,
         required:true,
