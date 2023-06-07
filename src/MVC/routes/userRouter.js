@@ -14,6 +14,9 @@ const {
   unblockUser,
   handleRefreshToken,
   logout,
+  updatePassword,
+  forgotPasswordToken,
+  resetPassword,
 } = require("../controllers/user.controller");
 
 // TODO: Auth
@@ -30,5 +33,9 @@ router.delete("/user/deleteUser/:id", deleteUser);
 router.get("/user/refreshToken", handleRefreshToken);
 router.put("/user/blockUser/:id", authMiddleware, isAdmin, blockUser);
 router.put("/user/unblockUser/:id", authMiddleware, isAdmin, unblockUser);
+
+router.put("/user/updatePassword", authMiddleware, updatePassword);
+router.post("/user/forgotPassword", forgotPasswordToken);
+router.put("/user/resetPassword/:token", resetPassword);
 
 module.exports = router;
