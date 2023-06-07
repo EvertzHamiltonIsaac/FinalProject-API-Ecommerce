@@ -207,8 +207,7 @@ const unblockUser = asyncHandler(async (req, res) => {
     res.status(404).send({ message: error.message });
   }
 });
-
-//Update Password
+//* Update Password
 const updatePassword = asyncHandler(async (req, res) => {
   const { _id } = req.user;
   const { password } = req.body;
@@ -222,12 +221,12 @@ const updatePassword = asyncHandler(async (req, res) => {
     res.status(304).send(user);
   }
 });
-
+//* Forgot Password
 const forgotPasswordToken = asyncHandler(async (req, res) => {
   const { email } = req.body;
   const user = await User.findOne({ email });
   if (!user) {
-    res.status(400).send({ message: error.message });
+    res.status(404).send({ message: " Token Expired, Try again later" });
   }
   try {
     const token = await user.createPasswordResetToken();
@@ -246,8 +245,7 @@ const forgotPasswordToken = asyncHandler(async (req, res) => {
     res.status(404).send({ message: error.message });
   }
 });
-
-// Reset Password
+//*Reset Password
 const resetPassword = asyncHandler(async (req, res) => {
   const { password } = req.body;
   const { token } = req.params;
