@@ -46,13 +46,18 @@ const productSchema = new mongoose.Schema({
         // enum: ['BLACK','BROWN','RED','WHITE','BLUE']
     },
     ratings: [{
-        start: Number,
+        stars: Number,
+        comment: String,
         postedby: {type: mongoose.Schema.Types.ObjectId, ref: "User"}
     }],
     sold: {
         type: Number, 
         default: 0,
         //select: false //* Hide Property
+    }, 
+    totalrating: {
+        type: String,
+        default: 0,
     }
 }, {timestamps: true});
 
