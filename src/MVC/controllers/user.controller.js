@@ -89,7 +89,12 @@ const handleRefreshToken = asyncHandler(async (req, res) => {
   const refreshToken = cookie.refreshToken;
   const user = await User.findOne({ refreshToken });
   if (!user) {
-    res.status(404).send({ message: "No refreshed token presented in the DB or the token soesnt match with the token in the DB" });
+    res
+      .status(404)
+      .send({
+        message:
+          "No refreshed token presented in the DB or the token soesnt match with the token in the DB",
+      });
   }
   jwt.verify(refreshToken, process.env.JWT_SECRET_WORD, (err, decoded) => {
     if (err || user.id !== decoded.id) {
