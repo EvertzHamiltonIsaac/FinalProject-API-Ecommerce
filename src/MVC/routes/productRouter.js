@@ -29,7 +29,7 @@ router.delete("/product/delete/:id", authMiddleware, isAdmin, deleteProduct);
 
 router.put("/product/uploadImg/:id", 
 authMiddleware, isAdmin, 
-uploadPhoto.array("images", 10), 
+uploadPhoto.any("images", 10), 
 productImgResize, 
 uploadImages);
 

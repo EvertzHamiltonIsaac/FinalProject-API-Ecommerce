@@ -2,12 +2,13 @@ const multer = require('multer');
 const sharp = require('sharp');
 const path = require('path');
 
+
 const storage = multer.diskStorage({
   destination: function(req, file, cb) {
     cb(null, path.join(__dirname, '../public/images/'));
   },
   filename: function(req, file, cb) {
-    const uniqueSuffix = Date.now()+ "-"+ Math.round(Math.random() * 1e9);
+    const uniqueSuffix = Date.now()+ "-"+ Math.round(Math.random() * 1E9);
     cb(null, file.fieldname + "-" + uniqueSuffix + ".jpeg");
   }
 });
@@ -27,12 +28,13 @@ const uploadPhoto = multer({
 });
 
 const productImgResize = async(req, res, next) => {
-  if(!req.files) return next();
+  if(!req.files){return next()}
   await Promise.all(req.files.map( async (file) => {
-    await sharp(file.path).resize(300, 300)
+    await sharp(file.path)
+    .resize(300, 300)
     .toFormat("jpeg")
     .jpeg({quality: 90})
-    .toFile(`public/images/products/${file.filename}`);
+    .toFile(path.join(__dirname, `../public/images/products/${file.filename}`))
   }));
   next();
 };
@@ -40,10 +42,11 @@ const productImgResize = async(req, res, next) => {
 const blogImgResize = async(req, res, next) => {
   if(!req.files) return next();
   await Promise.all(req.files.map( async (file) => {
-    await sharp(file.path).resize(300, 300)
+    await sharp(file.path)
+    .resize(300, 300)
     .toFormat("jpeg")
-    .jpeg({quality: 90})
-    .toFile(`public/images/blogs/${file.filename}`);
+    .jpeg({quality: 100})
+    .toFile(path.join(__dirname, `../public/images/blogs/${file.filename}`));
   }));
   next();
 };
