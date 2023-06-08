@@ -17,13 +17,20 @@ const {
 
 
 router.get("/product", getAllProducts);
-router.put("/product/uploadImg/:id", authMiddleware, isAdmin, uploadPhoto.any('images', 10), productImgResize, uploadImages);
-router.post("/product", authMiddleware, isAdmin,  createProduct);
+
+
+router.post("/product", authMiddleware, isAdmin, createProduct);
 router.put("/wishlist", authMiddleware, addToWishList);
 router.put("/product/rating", authMiddleware, ratingProduct)
 
 router.get("/product/:id", getProductById);
-router.put("/product/update/:id", authMiddleware, isAdmin,  updateProduct);
-router.delete("/product/delete/:id", authMiddleware, isAdmin,  deleteProduct);
+router.put("/product/update/:id", authMiddleware, isAdmin, updateProduct);
+router.delete("/product/delete/:id", authMiddleware, isAdmin, deleteProduct);
+
+router.put("/product/uploadImg/:id", 
+authMiddleware, isAdmin, 
+uploadPhoto.array("images", 10), 
+productImgResize, 
+uploadImages);
 
 module.exports = router;
