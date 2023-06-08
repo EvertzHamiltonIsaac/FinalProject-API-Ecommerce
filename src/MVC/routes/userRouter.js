@@ -19,7 +19,14 @@ const {
   resetPassword,
   loginAdmin,
   getWishList,
-  saveAddress
+  saveAddress,
+  userCart,
+  getUserCart,
+  emptyCart,
+  applyCoupon,
+  createOrder,
+  getOrders,
+  updateOrderStatus
 } = require("../controllers/user.controller");
 
 // TODO: Auth
@@ -33,9 +40,19 @@ router.post("/auth/login/admin", loginAdmin);
 //TODO: User
 router.get("/user/", getAllUsers);
 router.get('/user/wishlist', authMiddleware, getWishList);
+router.get('/user/', authMiddleware, getWishList);
+router.get("/user/cart", authMiddleware, getUserCart);
+router.post("/user/cart", authMiddleware, userCart);
+router.post("/user/applyCoupon",authMiddleware, applyCoupon);
+router.post("/user/cart/cash-order",authMiddleware, createOrder);
+router.get("/user/cart/get-orders",authMiddleware, getOrders);
+
+router.put("/user/updateOrder/:id",authMiddleware, isAdmin ,updateOrderStatus);
+
 router.get("/user/:id", authMiddleware, isAdmin, getUser);
 router.put("/user/updateUser", authMiddleware, isAdmin, updateUser);
 router.delete("/user/deleteUser/:id", deleteUser);
+router.delete("/user/emptyCart/", authMiddleware, emptyCart);
 
 router.get("/user/refreshToken", handleRefreshToken);
 router.put("/user/blockUser/:id", authMiddleware, isAdmin, blockUser);

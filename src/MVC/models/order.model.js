@@ -14,11 +14,11 @@ const orderSchema = new mongoose.Schema({
   ],
   paymentIntent: {},
   orderStatus: {
-    typee: String,
+    type: String,
     default: "Not Processed",
     enum: ["Not Processed", "Cash on Delivery", "Processing", "Dispatched", "Cancelled", "Delivered"],
   },
-  ordeyby: {
+  orderBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
   }
