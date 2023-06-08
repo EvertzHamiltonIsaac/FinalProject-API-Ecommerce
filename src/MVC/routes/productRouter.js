@@ -31,6 +31,7 @@ router.put("/product/uploadImg/:id",
 authMiddleware, isAdmin, 
 uploadPhoto.any("images", 10), 
 productImgResize, 
-uploadImages);
+uploadImages
+);
 
 module.exports = router;

@@ -35,15 +35,11 @@ const blogSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     }],
-    image: {
-      type: String,
-      default:
-        "https://www.cronista.com/files/image/521/521072/642b3400e007f.jpg",
-    },
     author: {
       type: String,
       default: "Admin",
     },
+    images: []
   },
   {
     toJSON: {
