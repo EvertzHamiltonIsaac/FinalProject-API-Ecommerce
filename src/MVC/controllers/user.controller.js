@@ -71,6 +71,51 @@ const loginUser = asyncHandler(async (req, res) => {
     });
   }
 });
+
+//* Admin Login
+const loginAdmin = asyncHandler(async (req, res) => {
+  const body = req.body;
+  const findAdmin = await User.findOne({ email: body.email });
+  if(findAdmin.role !== "admin") return res.status(401).send({message: "Not Authorized"});
+  if (findAdmin && (await findAdmin.isPasswordMatched(body.password))) {
+    const refreshToken = await TokenGenerator(findAdmin?.id, "1.1h");
+    const updateAdmin = await User.findByIdAndUpdate(
+      findAdmin.id,
+      {
+        refreshToken: refreshToken,
+      },
+      {
+        new: true,
+      }
+    );
+
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      maxAge: 18 * 21 * 24 * 60 * 1000,
+    });
+
+    res.status(202).send({
+      message: `Welcome to Ginger ${findAdmin.firstName}`,
+      data: {
+        id: findAdmin?._doc._id,
+        firstName: findAdmin?._doc.firstName,
+        lastName: findAdmin?._doc.lastName,
+        email: findAdmin?._doc.email,
+        phone: findAdmin?._doc.phone,
+      },
+      sessionToken: TokenGenerator(findAdmin?._doc._id, "1h"),
+    });
+  } else {
+    res.status(401).send({
+      fields: {
+        email: "Email@gmail.com",
+        password: "password",
+      },
+    });
+  }
+});
+
+
 //* Get all users
 const getAllUsers = asyncHandler(async (req, res) => {
   try {
@@ -281,4 +326,5 @@ module.exports = {
   updatePassword,
   forgotPasswordToken,
   resetPassword,
+  loginAdmin
 };

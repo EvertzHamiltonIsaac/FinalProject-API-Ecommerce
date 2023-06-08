@@ -17,12 +17,16 @@ const {
   updatePassword,
   forgotPasswordToken,
   resetPassword,
+  loginAdmin
 } = require("../controllers/user.controller");
 
 // TODO: Auth
 router.post("/auth/register", registerUser);
 router.post("/auth/login", loginUser);
 router.get("/user/logout", logout);
+
+//TODO: Admin
+router.post("/auth/login/admin", loginAdmin);
 
 //TODO: User
 router.get("/user/", getAllUsers);
@@ -37,5 +41,6 @@ router.put("/user/unblockUser/:id", authMiddleware, isAdmin, unblockUser);
 router.put("/user/updatePassword", authMiddleware, updatePassword);
 router.post("/user/forgotPassword", forgotPasswordToken);
 router.put("/user/resetPassword/:token", resetPassword);
+
 
 module.exports = router;
