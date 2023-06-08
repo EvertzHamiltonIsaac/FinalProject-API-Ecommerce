@@ -4,7 +4,7 @@ const productRouter = require("./MVC/routes/productRouter");
 const blogRouter = require("./MVC/routes/blogRouter");
 const categoryRouter = require("./MVC/routes/categoryRouter");
 const brandRouter = require("./MVC/routes/brandRouter");
-
+const couponRouter = require("./MVC/routes/couponRouter");
 //* Routers
 
 const express = require("express");
@@ -35,6 +35,7 @@ app.use(`${baseURL}`, productRouter);
 app.use(`${baseURL}`, blogRouter);
 app.use(`${baseURL}`, categoryRouter);
 app.use(`${baseURL}`, brandRouter);
+app.use(`${baseURL}`, couponRouter);
 
 //* Handle Errors using middlewares.
 app.use(notFound);
