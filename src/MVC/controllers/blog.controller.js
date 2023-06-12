@@ -62,7 +62,7 @@ const getAllBlogs = asyncHandler(async (req, res) => {
 
     res.status(302).send({
       message: "Blogs Found",
-      data: [{ ...allBlogs }],
+      data: [ ...allBlogs ],
     });
   } catch (error) {
     res.status(404).send({ message: error.message });
