@@ -12,13 +12,15 @@ const crypto = require("crypto");
 const uniqid = require("uniqid");
 
 // TODO: Controllers For Auth.
-//* Register
+//* Register ✅
 const registerUser = asyncHandler(async (req, res) => {
   const body = req.body;
   const findUser = await User.findOne({ email: body.email });
 
   if (!findUser) {
+    
     const userData = { ...body };
+
     try {
       const newUser = await User.create(userData);
 
@@ -27,6 +29,7 @@ const registerUser = asyncHandler(async (req, res) => {
         status: "200",
         data: [{ ...userData, password: newUser.password }],
       });
+
     } catch (err) {
       res.status(400).send({ message: err.message });
     }
@@ -34,7 +37,8 @@ const registerUser = asyncHandler(async (req, res) => {
     throw new Error("User Already Exists");
   }
 });
-//* Login
+
+//* Login ✅
 const loginUser = asyncHandler(async (req, res) => {
   const body = req.body;
 
@@ -69,6 +73,7 @@ const loginUser = asyncHandler(async (req, res) => {
     });
   } else {
     res.status(401).send({
+      message: 'Invalid credentials',
       fields: {
         email: "Email@gmail.com",
         password: "password",
@@ -77,11 +82,14 @@ const loginUser = asyncHandler(async (req, res) => {
   }
 });
 
-//* Admin Login
+//* Admin Login ✅
 const loginAdmin = asyncHandler(async (req, res) => {
+
   const body = req.body;
   const findAdmin = await User.findOne({ email: body.email });
+
   if (findAdmin.role !== "admin") return res.status(401).send({ message: "Not Authorized" });
+
   if (findAdmin && (await findAdmin.isPasswordMatched(body.password))) {
     const refreshToken = await TokenGenerator(findAdmin?.id, "1.1h");
     const updateAdmin = await User.findByIdAndUpdate(
@@ -113,6 +121,7 @@ const loginAdmin = asyncHandler(async (req, res) => {
   } else {
     res.status(401).send({
       fields: {
+        message: "Invalid Credentials",
         email: "Email@gmail.com",
         password: "password",
       },
@@ -120,37 +129,7 @@ const loginAdmin = asyncHandler(async (req, res) => {
   }
 });
 
-//* Get all users
-const getAllUsers = asyncHandler(async (req, res) => {
-  try {
-    const getUser = await User.find();
-    res.json(getUser);
-  } catch (error) {
-    throw new Error(error);
-  }
-});
-//* Handle refresh token
-const handleRefreshToken = asyncHandler(async (req, res) => {
-  const cookie = req.cookies;
-  if (!cookie?.refreshToken) {
-    throw new Error("Theres no Refreshed Token in cookies");
-  }
-  const refreshToken = cookie.refreshToken;
-  const user = await User.findOne({ refreshToken });
-  if (!user) {
-    res.status(404).send({
-      message: "No refreshed token presented in the DB or the token soesnt match with the token in the DB",
-    });
-  }
-  jwt.verify(refreshToken, process.env.JWT_SECRET_WORD, (err, decoded) => {
-    if (err || user.id !== decoded.id) {
-      throw new Error("There is something wrong with refresh token");
-    }
-    const accessToken = TokenGenerator(findUser?._id, "1h");
-    res.status(200).send({ accessToken });
-  });
-});
-//* Logout
+//* Logout ⚠️
 const logout = asyncHandler(async (req, res) => {
   const cookie = req.cookies;
   if (!cookie?.refreshToken) {
@@ -172,106 +151,30 @@ const logout = asyncHandler(async (req, res) => {
   });
   res.sendStatus(204); //forbiden
 });
-// *Update User
-const updateUser = asyncHandler(async (req, res) => {
-  // console.log(req.user);
-  const { _id } = req.user;
-  validateMongoId(_id);
-  try {
-    const updateUser = await User.findByIdAndUpdate(
-      _id,
-      {
-        firstName: req?.body?.firstName,
-        lastName: req?.body?.lastName,
-        email: req?.body?.email,
-        phone: req?.body?.phone,
-      },
-      {
-        new: true,
-      }
-    );
-    res.status(200).send(updateUser);
-  } catch (error) {
-    throw new Error(error);
+
+//* Handle refresh token ⚠️
+const handleRefreshToken = asyncHandler(async (req, res) => {
+  const cookie = req.cookies;
+  if (!cookie?.refreshToken) {
+    throw new Error("Theres no Refreshed Token in cookies");
   }
-});
-//* Get a Single User
-const getUser = asyncHandler(async (req, res) => {
-  console.log(req.params);
-  const { id } = req.params;
-  validateMongoId(id);
-  try {
-    const getaUser = await User.findById(id);
-    res.status(302).send(getaUser);
-  } catch (error) {
-    res.status(404).send({ message: error.message });
+  const refreshToken = cookie.refreshToken;
+  const user = await User.findOne({ refreshToken });
+  if (!user) {
+    res.status(404).send({
+      message: "No refreshed token presented in the DB or the token soesnt match with the token in the DB",
+    });
   }
-});
-//* Delete User
-const deleteUser = asyncHandler(async (req, res) => {
-  console.log(req.params);
-  const { id } = req.params;
-  validateMongoId(id);
-  try {
-    const deleteUser = await User.findByIdAndDelete(id);
-    res.status(200).send(deleteUser);
-  } catch (error) {
-    res.status(400).send({ message: error.message });
-  }
-});
-//* Block and Unblock a User
-const blockUser = asyncHandler(async (req, res) => {
-  const { id } = req.params;
-  validateMongoId(id);
-  try {
-    const blockusr = await User.findByIdAndUpdate(
-      id,
-      {
-        isBlocked: true,
-      },
-      {
-        new: true,
-      }
-    );
-    res.status(200).send(blockusr);
-  } catch (error) {
-    res.status(404).send({ message: error.message });
-  }
-});
-const unblockUser = asyncHandler(async (req, res) => {
-  const { id } = req.params;
-  validateMongoId(id);
-  try {
-    const unblockusr = await User.findByIdAndUpdate(
-      id,
-      {
-        isBlocked: false,
-      },
-      {
-        new: true,
-      }
-    );
-    res.status(200).send(unblockusr);
-  } catch (error) {
-    res.status(404).send({ message: error.message });
-  }
+  jwt.verify(refreshToken, process.env.JWT_SECRET_WORD, (err, decoded) => {
+    if (err || user.id !== decoded.id) {
+      throw new Error("There is something wrong with refresh token");
+    }
+    const accessToken = TokenGenerator(findUser?._id, "1h");
+    res.status(200).send({ accessToken });
+  });
 });
 
-//* Update Password
-const updatePassword = asyncHandler(async (req, res) => {
-  const { _id } = req.user;
-  const { password } = req.body;
-  validateMongoId(_id);
-  const user = await User.findById(_id);
-  if (password) {
-    user.password = password;
-    const updatedPassword = await user.save();
-    res.status(200).send(updatedPassword);
-  } else {
-    res.status(304).send(user);
-  }
-});
-//* Forgot Password
+//* Forgot Password ⚠️
 const forgotPasswordToken = asyncHandler(async (req, res) => {
   const { email } = req.body;
   const user = await User.findOne({ email });
@@ -295,7 +198,8 @@ const forgotPasswordToken = asyncHandler(async (req, res) => {
     res.status(404).send({ message: error.message });
   }
 });
-//* Reset Password
+
+//* Reset Password ⚠️
 const resetPassword = asyncHandler(async (req, res) => {
   const { password } = req.body;
   const { token } = req.params;
@@ -314,13 +218,127 @@ const resetPassword = asyncHandler(async (req, res) => {
   res.status(200).send(user);
 });
 
+//* Get all users ✅
+const getAllUsers = asyncHandler(async (req, res) => {
+  try {
+    const getUser = await User.find();
+    res.json(getUser);
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
+//* Get a Single User ✅
+const getUser = asyncHandler(async (req, res) => {
+  console.log(req.params);
+  const { id } = req.params;
+  validateMongoId(id);
+  try {
+    const getaUser = await User.findById(id);
+    res.status(302).send(getaUser);
+  } catch (error) {
+    res.status(404).send({ message: error.message });
+  }
+});
+
+// *Update User ✅
+const updateUser = asyncHandler(async (req, res) => {
+  const { _id } = req.user;
+  validateMongoId(_id);
+  try {
+    const updateUser = await User.findByIdAndUpdate(
+      _id,
+      {
+        firstName: req?.body?.firstName,
+        lastName: req?.body?.lastName,
+        email: req?.body?.email,
+        phone: req?.body?.phone,
+      },
+      {
+        new: true,
+      }
+    );
+    res.status(200).send(updateUser);
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
+//* Delete User ✅
+const deleteUser = asyncHandler(async (req, res) => {
+  console.log(req.params);
+  const { id } = req.params;
+  validateMongoId(id);
+  try {
+    const deleteUser = await User.findByIdAndDelete(id);
+    res.status(200).send(deleteUser);
+  } catch (error) {
+    res.status(400).send({ message: error.message });
+  }
+});
+
+//* Block User ✅
+const blockUser = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  validateMongoId(id);
+  try {
+    const blockusr = await User.findByIdAndUpdate(
+      id,
+      {
+        isBlocked: true,
+      },
+      {
+        new: true,
+      }
+    );
+    res.status(200).send(blockusr);
+  } catch (error) {
+    res.status(404).send({ message: error.message });
+  }
+});
+
+//* Unblock User ✅⚠️
+const unblockUser = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  validateMongoId(id);
+  try {
+    const unblockusr = await User.findByIdAndUpdate(
+      id,
+      {
+        isBlocked: false,
+      },
+      {
+        new: true,
+      }
+    );
+    res.status(200).send(unblockusr);
+  } catch (error) {
+    res.status(404).send({ message: error.message });
+  }
+});
+
+//* Update Password ✅
+const updatePassword = asyncHandler(async (req, res) => {
+  const { _id } = req.user;
+  const { password } = req.body;
+  validateMongoId(_id);
+  const user = await User.findById(_id);
+  if (password) {
+    user.password = password;
+    const updatedPassword = await user.save();
+    res.status(200).send(updatedPassword);
+  } else {
+    res.status(304).send(user);
+  }
+});
+
+//* Get Wish List ✅⚠️
 const getWishList = asyncHandler(async (req, res) => {
   const { _id } = req.user;
   try {
     const findUser = await User.findById(_id).populate("wishlist");
     res.status(302).send(findUser);
   } catch (error) {
-    // res.status(404).send({message: Error(error.message)});
     throw new Error(error.message);
   }
 });
@@ -346,9 +364,11 @@ const saveAddress = asyncHandler(async (req, res) => {
 });
 
 const userCart = asyncHandler(async (req, res) => {
+
   const { cart } = req.body;
   const { _id } = req.user;
   validateMongoId(_id);
+
   try {
     let products = [];
 
