@@ -2,7 +2,8 @@
 const userRouter = require("./MVC/routes/userRouter");
 const productRouter = require("./MVC/routes/productRouter");
 const blogRouter = require("./MVC/routes/blogRouter");
-const categoryRouter = require("./MVC/routes/categoryRouter");
+const productoCategoryRouter = require("./MVC/routes/productoCategoryRouter");
+const blogCategoryRouter = require("./MVC/routes/blogCategoryRouter");
 const brandRouter = require("./MVC/routes/brandRouter");
 const couponRouter = require("./MVC/routes/couponRouter");
 //* Routers
@@ -33,9 +34,11 @@ const baseURL = "/api/v1";
 app.use(`${baseURL}`, userRouter);
 app.use(`${baseURL}`, productRouter);
 app.use(`${baseURL}`, blogRouter);
-app.use(`${baseURL}`, categoryRouter);
+app.use(`${baseURL}`, productoCategoryRouter);
+app.use(`${baseURL}`, blogCategoryRouter);
 app.use(`${baseURL}`, brandRouter);
 app.use(`${baseURL}`, couponRouter);
+
 
 //* Handle Errors using middlewares.
 app.use(notFound);
