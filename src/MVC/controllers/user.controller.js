@@ -18,7 +18,6 @@ const registerUser = asyncHandler(async (req, res) => {
   const findUser = await User.findOne({ email: body.email });
 
   if (!findUser) {
-    
     const userData = { ...body };
 
     try {
@@ -29,7 +28,6 @@ const registerUser = asyncHandler(async (req, res) => {
         status: "200",
         data: [{ ...userData, password: newUser.password }],
       });
-
     } catch (err) {
       res.status(400).send({ message: err.message });
     }
@@ -73,7 +71,7 @@ const loginUser = asyncHandler(async (req, res) => {
     });
   } else {
     res.status(401).send({
-      message: 'Invalid credentials',
+      message: "Invalid credentials",
       fields: {
         email: "Email@gmail.com",
         password: "password",
@@ -84,11 +82,11 @@ const loginUser = asyncHandler(async (req, res) => {
 
 //* Admin Login ✅
 const loginAdmin = asyncHandler(async (req, res) => {
-
   const body = req.body;
   const findAdmin = await User.findOne({ email: body.email });
 
-  if (findAdmin.role !== "admin") return res.status(401).send({ message: "Not Authorized" });
+  if (findAdmin.role !== "admin")
+    return res.status(401).send({ message: "Not Authorized" });
 
   if (findAdmin && (await findAdmin.isPasswordMatched(body.password))) {
     const refreshToken = await TokenGenerator(findAdmin?.id, "1.1h");
@@ -162,7 +160,8 @@ const handleRefreshToken = asyncHandler(async (req, res) => {
   const user = await User.findOne({ refreshToken });
   if (!user) {
     res.status(404).send({
-      message: "No refreshed token presented in the DB or the token soesnt match with the token in the DB",
+      message:
+        "No refreshed token presented in the DB or the token doesnt match with the token in the DB",
     });
   }
   jwt.verify(refreshToken, process.env.JWT_SECRET_WORD, (err, decoded) => {
@@ -364,7 +363,6 @@ const saveAddress = asyncHandler(async (req, res) => {
 });
 
 const userCart = asyncHandler(async (req, res) => {
-
   const { cart } = req.body;
   const { _id } = req.user;
   validateMongoId(_id);
@@ -411,7 +409,10 @@ const getUserCart = asyncHandler(async (req, res) => {
   const { _id } = req.user;
   validateMongoId(_id);
   try {
-    const cart = await Cart.findOne({ orderBy: _id }).populate("products.product", "_id title price totalAfterDiscount");
+    const cart = await Cart.findOne({ orderBy: _id }).populate(
+      "products.product",
+      "_id title price totalAfterDiscount"
+    );
     res.status(302).send(cart);
   } catch (error) {
     throw new Error(error);
@@ -441,9 +442,18 @@ const applyCoupon = asyncHandler(async (req, res) => {
   }
 
   const user = await User.findOne({ _id });
-  let { products, cartTotal } = await Cart.findOne({ orderBy: user._id }).populate("products.product");
-  let totalAfterDiscount = (cartTotal - (cartTotal * validCoupon.discount) / 100).toFixed(2);
-  await Cart.findOneAndUpdate({ orderBy: user._id }, { totalAfterDiscount }, { new: true });
+  let { products, cartTotal } = await Cart.findOne({
+    orderBy: user._id,
+  }).populate("products.product");
+  let totalAfterDiscount = (
+    cartTotal -
+    (cartTotal * validCoupon.discount) / 100
+  ).toFixed(2);
+  await Cart.findOneAndUpdate(
+    { orderBy: user._id },
+    { totalAfterDiscount },
+    { new: true }
+  );
 
   res.status(200).send(totalAfterDiscount);
 });
@@ -502,7 +512,9 @@ const getOrders = asyncHandler(async (req, res) => {
   validateMongoId(_id);
 
   try {
-    const userOrders = await Order.findOne({ orderBy: _id }).populate("products.product").exec();
+    const userOrders = await Order.findOne({ orderBy: _id })
+      .populate("products.product")
+      .exec();
     res.status(301).send(userOrders);
   } catch (error) {
     throw new Error(error);
@@ -525,7 +537,9 @@ const updateOrderStatus = asyncHandler(async (req, res) => {
       { new: true }
     );
     res.status(200).send(updateOrderStatus);
-  } catch (error) {throw new Error(error)}
+  } catch (error) {
+    throw new Error(error);
+  }
 });
 
 module.exports = {
