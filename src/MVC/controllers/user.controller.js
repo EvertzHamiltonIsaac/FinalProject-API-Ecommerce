@@ -130,6 +130,7 @@ const loginAdmin = asyncHandler(async (req, res) => {
 });
 
 //* Logout ⚠️
+//! Ver video para ver como funciona.
 const logout = asyncHandler(async (req, res) => {
   const cookie = req.cookies;
   if (!cookie?.refreshToken) {
@@ -152,9 +153,10 @@ const logout = asyncHandler(async (req, res) => {
   res.sendStatus(204); //forbiden
 });
 
-//* Handle refresh token ⚠️
-const handleRefreshToken = asyncHandler(async (req, res) => {
+//* Refresh token ✅
+const RefreshToken = asyncHandler(async (req, res) => {
   const cookie = req.cookies;
+  console.log(cookie);
   if (!cookie?.refreshToken) {
     throw new Error("Theres no Refreshed Token in cookies");
   }
@@ -169,9 +171,10 @@ const handleRefreshToken = asyncHandler(async (req, res) => {
     if (err || user.id !== decoded.id) {
       throw new Error("There is something wrong with refresh token");
     }
-    const accessToken = TokenGenerator(findUser?._id, "1h");
+    const accessToken = TokenGenerator(user?._id, "1h");
     res.status(200).send({ accessToken });
   });
+  
 });
 
 //* Forgot Password ⚠️
@@ -179,13 +182,13 @@ const forgotPasswordToken = asyncHandler(async (req, res) => {
   const { email } = req.body;
   const user = await User.findOne({ email });
   if (!user) {
-    res.status(404).send({ message: " Token Expired, Try again later" });
+    res.status(404).send({ message: "Email Incorrect" });
   }
   try {
     const token = await user.createPasswordResetToken();
     await user.save();
     const resetURL =
-      "Hi, Please follow this link to reset your password. This link is valid till 10 minutes from now. < href='http://127.0.0.1:3000/api/v1/user/updatePassword/${token}'>Click Here</>";
+      `Hi, Please follow this link to reset your password. This link is valid till 10 minutes from now. < href='http://127.0.0.1:3000/api/v1/user/updatePassword/${token}'>Click Here</>`;
     const data = {
       to: email,
       text: "Hey User",
@@ -200,6 +203,7 @@ const forgotPasswordToken = asyncHandler(async (req, res) => {
 });
 
 //* Reset Password ⚠️
+
 const resetPassword = asyncHandler(async (req, res) => {
   const { password } = req.body;
   const { token } = req.params;
@@ -537,7 +541,7 @@ module.exports = {
   updateUser,
   blockUser,
   unblockUser,
-  handleRefreshToken,
+  RefreshToken,
   logout,
   updatePassword,
   forgotPasswordToken,
