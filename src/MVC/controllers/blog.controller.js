@@ -2,7 +2,7 @@ const Blog = require("../models/blog.model");
 const asyncHandler = require("express-async-handler");
 const validateMongoId = require("../../utils/validateMongoId");
 const cloudinaryUploadImg = require("../../utils/cloudinary");
-const fs = require('fs');
+const fs = require("fs");
 
 const createBlog = asyncHandler(async (req, res) => {
   try {
@@ -13,7 +13,7 @@ const createBlog = asyncHandler(async (req, res) => {
       data: [{ ...newBlog?._doc }],
     });
   } catch (error) {
-    res.status(400).send({ message: error.message });
+    res.status(400).send({ status: 404, message: error.message });
   }
 });
 
@@ -30,7 +30,7 @@ const updateBlog = asyncHandler(async (req, res) => {
       data: [{ ...updatedBlog?._doc }],
     });
   } catch (error) {
-    res.status(400).send({ message: error.message });
+    res.status(400).send({ status: 404, message: error.message });
   }
 });
 
@@ -52,7 +52,7 @@ const getBlogById = asyncHandler(async (req, res) => {
       data: [{ ...blog?._doc }],
     });
   } catch (error) {
-    res.status(404).send({ message: error.message });
+    res.status(404).send({ status: 404, message: error.message });
   }
 });
 
@@ -62,10 +62,10 @@ const getAllBlogs = asyncHandler(async (req, res) => {
 
     res.status(302).send({
       message: "Blogs Found",
-      data: [ ...allBlogs ],
+      data: [...allBlogs],
     });
   } catch (error) {
-    res.status(404).send({ message: error.message });
+    res.status(404).send({ status: 404, message: error.message });
   }
 });
 
@@ -82,7 +82,7 @@ const deleteBlog = asyncHandler(async (req, res) => {
       data: [{ ...deletedBlog?._doc }],
     });
   } catch (error) {
-    res.status(400).send({ message: error.message });
+    res.status(400).send({ status: 404, message: error.message });
   }
 });
 
@@ -114,7 +114,9 @@ const likeBlog = asyncHandler(async (req, res) => {
       { new: true }
     );
 
-    res.status(200).send({blogLiked});
+    res
+      .status(200)
+      .send({ message: "Blog Liked Successfully", data: blogLiked });
   }
 
   if (isLiked) {
@@ -127,18 +129,19 @@ const likeBlog = asyncHandler(async (req, res) => {
       { new: true }
     );
 
-    res.status(200).send({blogLiked});
-
+    res
+      .status(200)
+      .send({ message: "Blog Liked Successfully", data: blogLiked });
   } else {
     const blogLiked = await Blog.findByIdAndUpdate(
-        blogId,
-        {
-          $push: { likes: loginUserId },
-          isLiked: true,
-        },
-        { new: true }
-      );
-      res.status(200).send({blogLiked});
+      blogId,
+      {
+        $push: { likes: loginUserId },
+        isLiked: true,
+      },
+      { new: true }
+    );
+    res.status(200).send({ blogLiked });
   }
 });
 
@@ -170,7 +173,7 @@ const disLikeBlog = asyncHandler(async (req, res) => {
       { new: true }
     );
 
-    res.status(200).send({blog});
+    res.status(200).send({ message: "Blog Disliked Successfully", data: blog });
   }
 
   if (isDisLiked) {
@@ -183,25 +186,26 @@ const disLikeBlog = asyncHandler(async (req, res) => {
       { new: true }
     );
 
-    res.status(200).send({blog});
-
+    res.status(200).send({ message: "Blog Disliked Successfully", data: blog });
   } else {
     const blogLiked = await Blog.findByIdAndUpdate(
-        blogId,
-        {
-          $push: { dislikes: loginUserId },
-          isDisliked: true,
-        },
-        { new: true }
-      );
-      res.status(200).send({blogLiked});
+      blogId,
+      {
+        $push: { dislikes: loginUserId },
+        isDisliked: true,
+      },
+      { new: true }
+    );
+    res
+      .status(200)
+      .send({ message: "Blog Liked Successfully", data: blogLiked });
   }
 });
 
 const uploadImages = asyncHandler(async (req, res) => {
   const { id } = req.params;
   validateMongoId(id);
-  
+
   try {
     const uploader = (path) => cloudinaryUploadImg(path, "images");
     const urls = [];
@@ -225,11 +229,12 @@ const uploadImages = asyncHandler(async (req, res) => {
       { new: true }
     );
 
-    res.status(200).send(findBlog);
+    res
+      .status(200)
+      .send({ message: "Blog Images Updated Successfully", data: findBlog });
   } catch (error) {
     throw new Error(error);
   }
-
 });
 
 module.exports = {
@@ -240,5 +245,5 @@ module.exports = {
   deleteBlog,
   likeBlog,
   disLikeBlog,
-  uploadImages
+  uploadImages,
 };

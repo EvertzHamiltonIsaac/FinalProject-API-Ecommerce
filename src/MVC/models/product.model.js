@@ -1,63 +1,65 @@
-const { Timestamp } = require('bson');
-const mongoose = require('mongoose'); // Erase if already required
+const { Timestamp } = require("bson");
+const mongoose = require("mongoose"); // Erase if already required
 
 // Declare the Schema of the Mongo model
-const productSchema = new mongoose.Schema({
-    title:{
-        type:String,
-        required:true,
-        trim: true
+const productSchema = new mongoose.Schema(
+  {
+    title: {
+      type: String,
+      required: true,
+      trim: true,
     },
-    slug:{
-        type:String,
-        required:true,
-        unique:true,
-        lowercase: true
+    slug: {
+      type: String,
+      required: true,
+      unique: true,
+      lowercase: true,
     },
-    description:{
-        type:String,
-        required:true,
+    description: {
+      type: String,
+      required: true,
     },
-    price:{
-        type:Number,
-        required:true,
+    price: {
+      type: Number,
+      required: true,
     },
     category: {
-        type: String,
-        required:true
-        // type: mongoose.Schema.Types.ObjectId,
-        // ref: "Category"
+      type: String,
+      required: true,
+      // type: mongoose.Schema.Types.ObjectId,
+      // ref: "Category"
     },
     brand: {
-        type: String,
-        required:true
-        // enum: ["Apple", "Samsung", "Lenovo"]
+      type: String,
+      required: true,
+      // enum: ["Apple", "Samsung", "Lenovo"]
     },
     quantity: {
-        type: Number,
-        required: true
+      type: Number,
+      required: true,
     },
-    images: [], 
-    color: {
-        type: String,
-        required: true
-        // enum: ['BLACK','BROWN','RED','WHITE','BLUE']
-    },
-    ratings: [{
+    images: [],
+    color: [],
+    tags: [],
+    ratings: [
+      {
         stars: Number,
         comment: String,
-        postedby: {type: mongoose.Schema.Types.ObjectId, ref: "User"}
-    }],
+        postedby: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+      },
+    ],
     sold: {
-        type: Number, 
-        default: 0,
-        //select: false //* Hide Property
-    }, 
+      type: Number,
+      default: 0,
+      //select: false //* Hide Property
+    },
     totalrating: {
-        type: String,
-        default: 0,
-    }
-}, {timestamps: true});
+      type: String,
+      default: 0,
+    },
+  },
+  { timestamps: true }
+);
 
 //Export the model
-module.exports = mongoose.model('Product', productSchema);
+module.exports = mongoose.model("Product", productSchema);
