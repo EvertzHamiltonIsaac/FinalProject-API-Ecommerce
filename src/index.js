@@ -5,7 +5,9 @@ const blogRouter = require("./MVC/routes/blogRouter");
 const productoCategoryRouter = require("./MVC/routes/productoCategoryRouter");
 const blogCategoryRouter = require("./MVC/routes/blogCategoryRouter");
 const brandRouter = require("./MVC/routes/brandRouter");
+const colorRouter = require("./MVC/routes/colorRouter");
 const couponRouter = require("./MVC/routes/couponRouter");
+const enquiryRouter = require("./MVC/routes/enquiryRouter");
 //* Routers
 
 const express = require("express");
@@ -37,8 +39,9 @@ app.use(`${baseURL}`, blogRouter);
 app.use(`${baseURL}`, productoCategoryRouter);
 app.use(`${baseURL}`, blogCategoryRouter);
 app.use(`${baseURL}`, brandRouter);
+app.use(`${baseURL}`, colorRouter);
+app.use(`${baseURL}`, enquiryRouter);
 app.use(`${baseURL}`, couponRouter);
-
 
 //* Handle Errors using middlewares.
 app.use(notFound);
