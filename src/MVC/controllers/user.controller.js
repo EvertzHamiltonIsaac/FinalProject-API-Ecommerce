@@ -29,7 +29,7 @@ const registerUser = asyncHandler(async (req, res) => {
         data: [{ ...userData, password: newUser.password }],
       });
     } catch (err) {
-      res.status(400).send({ message: err.message });
+      res.status(400).send({ status: 400, message: err.message });
     }
   } else {
     throw new Error("User Already Exists");
@@ -71,6 +71,7 @@ const loginUser = asyncHandler(async (req, res) => {
     });
   } else {
     res.status(401).send({
+      status: 401,
       message: "Invalid credentials",
       fields: {
         email: "Email@gmail.com",
@@ -86,7 +87,7 @@ const loginAdmin = asyncHandler(async (req, res) => {
   const findAdmin = await User.findOne({ email: body.email });
 
   if (findAdmin.role !== "admin")
-    return res.status(401).send({ message: "Not Authorized" });
+    return res.status(401).send({ status: 401, message: "Not Authorized" });
 
   if (findAdmin && (await findAdmin.isPasswordMatched(body.password))) {
     const refreshToken = await TokenGenerator(findAdmin?.id, "1.1h");
@@ -118,6 +119,7 @@ const loginAdmin = asyncHandler(async (req, res) => {
     });
   } else {
     res.status(401).send({
+      status: 401,
       fields: {
         message: "Invalid Credentials",
         email: "Email@gmail.com",
@@ -162,6 +164,7 @@ const RefreshToken = asyncHandler(async (req, res) => {
   const user = await User.findOne({ refreshToken });
   if (!user) {
     res.status(404).send({
+      status: 404,
       message:
         "No refreshed token presented in the DB or the token doesnt match with the token in the DB",
     });
@@ -170,8 +173,14 @@ const RefreshToken = asyncHandler(async (req, res) => {
     if (err || user.id !== decoded.id) {
       throw new Error("There is something wrong with refresh token");
     }
+    
     const accessToken = TokenGenerator(user?._id, "1h");
     res.status(200).send({ accessToken });
+
+    const accessToken = TokenGenerator(findUser?._id, "1h");
+    res
+      .status(200)
+      .send({ message: "Token de Acceso Generado", data: accessToken });
   });
   
 });
@@ -181,7 +190,9 @@ const forgotPasswordToken = asyncHandler(async (req, res) => {
   const { email } = req.body;
   const user = await User.findOne({ email });
   if (!user) {
-    res.status(404).send({ message: "Email Incorrect" });
+    res
+      .status(404)
+      .send({ status: 404, message: " Token Expired, Try again later" });
   }
   try {
     const token = await user.createPasswordResetToken();
@@ -195,9 +206,9 @@ const forgotPasswordToken = asyncHandler(async (req, res) => {
       htm: resetURL,
     };
     sendEmail(data);
-    res.status(200).send(token);
+    res.status(200).send({ message: "Token de Acceso Generado", data: token });
   } catch (error) {
-    res.status(404).send({ message: error.message });
+    res.status(404).send({ status: 404, message: error.message });
   }
 });
 
@@ -212,13 +223,15 @@ const resetPassword = asyncHandler(async (req, res) => {
     passwordResetExpires: { $gt: Date.now() },
   });
   if (!user) {
-    res.status(404).send({ message: " Token Expired, Try again later" });
+    res
+      .status(404)
+      .send({ status: 404, message: " Token Expired, Try again later" });
   }
   user.password = password;
   user.passwordResetToken = undefined;
   user.passwordResetExpires = undefined;
   await user.save();
-  res.status(200).send(user);
+  res.status(200).send({ message: "User Password Updated", data: user });
 });
 
 //* Get all users ✅
@@ -238,9 +251,9 @@ const getUser = asyncHandler(async (req, res) => {
   validateMongoId(id);
   try {
     const getaUser = await User.findById(id);
-    res.status(302).send(getaUser);
+    res.status(302).send({ message: "User Found", data: getaUser });
   } catch (error) {
-    res.status(404).send({ message: error.message });
+    res.status(404).send({ status: 404, message: error.message });
   }
 });
 
@@ -261,7 +274,9 @@ const updateUser = asyncHandler(async (req, res) => {
         new: true,
       }
     );
-    res.status(200).send(updateUser);
+    res
+      .status(200)
+      .send({ message: "User Updated Successfully", data: updateUser });
   } catch (error) {
     throw new Error(error);
   }
@@ -274,9 +289,11 @@ const deleteUser = asyncHandler(async (req, res) => {
   validateMongoId(id);
   try {
     const deleteUser = await User.findByIdAndDelete(id);
-    res.status(200).send(deleteUser);
+    res
+      .status(200)
+      .send({ message: "User Deleted Successfully", data: deleteUser });
   } catch (error) {
-    res.status(400).send({ message: error.message });
+    res.status(400).send({ status: 400, message: error.message });
   }
 });
 
@@ -294,9 +311,11 @@ const blockUser = asyncHandler(async (req, res) => {
         new: true,
       }
     );
-    res.status(200).send(blockusr);
+    res
+      .status(200)
+      .send({ message: "User Blocked Successfully", data: blockusr });
   } catch (error) {
-    res.status(404).send({ message: error.message });
+    res.status(404).send({ status: 404, message: error.message });
   }
 });
 
@@ -314,9 +333,11 @@ const unblockUser = asyncHandler(async (req, res) => {
         new: true,
       }
     );
-    res.status(200).send(unblockusr);
+    res
+      .status(200)
+      .send({ message: "User Unblocked Successfully", data: unblockusr });
   } catch (error) {
-    res.status(404).send({ message: error.message });
+    res.status(404).send({ status: 404, message: error.message });
   }
 });
 
@@ -329,9 +350,11 @@ const updatePassword = asyncHandler(async (req, res) => {
   if (password) {
     user.password = password;
     const updatedPassword = await user.save();
-    res.status(200).send(updatedPassword);
+    res
+      .status(200)
+      .send({ message: "User Updated Successfully", data: updatedPassword });
   } else {
-    res.status(304).send(user);
+    res.status(400).send({ status: 400, data: user });
   }
 });
 
@@ -340,7 +363,9 @@ const getWishList = asyncHandler(async (req, res) => {
   const { _id } = req.user;
   try {
     const findUser = await User.findById(_id).populate("wishlist");
-    res.status(302).send(findUser);
+    res
+      .status(302)
+      .send({ message: "WishList Founded Successfully", data: findUser });
   } catch (error) {
     throw new Error(error.message);
   }
@@ -360,7 +385,9 @@ const saveAddress = asyncHandler(async (req, res) => {
       }
     );
 
-    res.status(200).send(updateUser);
+    res
+      .status(200)
+      .send({ message: "Address Saved Successfully", data: updateUser });
   } catch (error) {
     throw new Error(error);
   }
@@ -403,7 +430,7 @@ const userCart = asyncHandler(async (req, res) => {
       orderBy: user?._id,
     }).save();
 
-    res.status(202).send(newCart);
+    res.status(202).send({ message: "Created New Cart", data: newCart });
   } catch (error) {
     throw new Error(error);
   }
@@ -417,7 +444,7 @@ const getUserCart = asyncHandler(async (req, res) => {
       "products.product",
       "_id title price totalAfterDiscount"
     );
-    res.status(302).send(cart);
+    res.status(302).send({ message: "User Cart Founded ", data: cart });
   } catch (error) {
     throw new Error(error);
   }
@@ -430,7 +457,7 @@ const emptyCart = asyncHandler(async (req, res) => {
     const user = await User.findOne({ _id });
     const cart = await Cart.findOneAndRemove({ orderBy: _id });
 
-    res.status(302).send(cart);
+    res.status(302).send({ message: "Cart Empty Successfully", data: cart });
   } catch (error) {
     throw new Error(error);
   }
@@ -459,7 +486,9 @@ const applyCoupon = asyncHandler(async (req, res) => {
     { new: true }
   );
 
-  res.status(200).send(totalAfterDiscount);
+  res
+    .status(200)
+    .send({ message: "Coupon Applied Successfully", data: totalAfterDiscount });
 });
 
 const createOrder = asyncHandler(async (req, res) => {
@@ -503,7 +532,7 @@ const createOrder = asyncHandler(async (req, res) => {
     const updated = await Product.bulkWrite(update, {});
 
     res.status(200).send({
-      message: "Order successfully",
+      message: "Order Created successfully",
       updated,
     });
   } catch (error) {
@@ -519,7 +548,9 @@ const getOrders = asyncHandler(async (req, res) => {
     const userOrders = await Order.findOne({ orderBy: _id })
       .populate("products.product")
       .exec();
-    res.status(301).send(userOrders);
+    res
+      .status(301)
+      .send({ message: "Order Founded Successfully", data: userOrders });
   } catch (error) {
     throw new Error(error);
   }
@@ -540,7 +571,9 @@ const updateOrderStatus = asyncHandler(async (req, res) => {
       },
       { new: true }
     );
-    res.status(200).send(updateOrderStatus);
+    res
+      .status(200)
+      .send({ message: "Order Updated Successfully", data: updateOrderStatus });
   } catch (error) {
     throw new Error(error);
   }

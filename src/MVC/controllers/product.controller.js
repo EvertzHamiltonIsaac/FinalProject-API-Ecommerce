@@ -15,20 +15,18 @@ const createProduct = asyncHandler(async (req, res) => {
       req.body.slug = slugify(req.body.title);
     }
     const newProduct = await Product.create(req.body);
-    res.status(201).send(newProduct);
+    res.status(201).send({ message: "Created New Product", data: newProduct });
   } catch (error) {
-    res.status(400).send({
-      message: error.message,
-    });
+    res.status(400).send({ status: 400, message: error.message });
   }
 });
 const getProductById = asyncHandler(async (req, res) => {
   const { id } = req.params;
   try {
     const findProduct = await Product.findById(id);
-    res.status(302).send(findProduct);
+    res.status(200).send({ message: "Product Founded", data: findProduct });
   } catch (error) {
-    res.status(404).send({ message: error.message });
+    res.status(404).send({ status: 404, message: error.message });
   }
 });
 const getAllProducts = asyncHandler(async (req, res) => {
@@ -70,9 +68,9 @@ const getAllProducts = asyncHandler(async (req, res) => {
     console.log(page, limit, skip);
 
     const product = await query;
-    res.status(302).send(product);
+    res.status(200).send({ message: "All Product Founded", data: product });
   } catch (error) {
-    res.status(404).send({ message: error.message });
+    res.status(404).send({ status: 404, message: error.message });
   }
 });
 const updateProduct = asyncHandler(async (req, res) => {
@@ -86,18 +84,22 @@ const updateProduct = asyncHandler(async (req, res) => {
       req.body,
       { new: true }
     );
-    res.status(200).send(updatedProduct);
+    res
+      .status(200)
+      .send({ message: "Updated Product Successfully", data: updatedProduct });
   } catch (error) {
-    res.status(400).send({ message: error.message });
+    res.status(400).send({ status: 400, message: error.message });
   }
 });
 const deleteProduct = asyncHandler(async (req, res) => {
   const { id } = req.params;
   try {
     const deletedProduct = await Product.findOneAndDelete(id);
-    res.status(200).send(deletedProduct);
+    res
+      .status(200)
+      .send({ message: "Deleted Product Successfully", data: deletedProduct });
   } catch (error) {
-    res.status(400).send({ message: error.message });
+    res.status(400).send({ status: 400, message: error.message });
   }
 });
 
@@ -123,7 +125,10 @@ const addToWishList = asyncHandler(async (req, res) => {
         }
       );
 
-      res.status(200).send(user);
+      res.status(200).send({
+        message: "Product Added to the Wishlist Successfully",
+        data: user,
+      });
     } else {
       let user = await User.findByIdAndUpdate(
         _id,
@@ -135,10 +140,13 @@ const addToWishList = asyncHandler(async (req, res) => {
         }
       );
 
-      res.status(200).send(user);
+      res.status(200).send({
+        message: "Product Added to the Wishlist Successfully",
+        data: user,
+      });
     }
   } catch (error) {
-    res.status(400).send({ message: error.message });
+    res.status(400).send({ status: 400, message: error.message });
   }
 });
 
@@ -195,9 +203,11 @@ const ratingProduct = asyncHandler(async (req, res) => {
       { new: true }
     );
 
-    res.status(200).send(productWithRatings);
+    res
+      .status(200)
+      .send({ message: "Product Ratings", data: productWithRatings });
   } catch (error) {
-    res.status(400).send({ message: error.message });
+    res.status(400).send({ status: 400, message: error.message });
   }
 });
 
@@ -216,7 +226,7 @@ const uploadImages = asyncHandler(async (req, res) => {
     const images = urls.map((file) => {
       return file;
     });
-    res.status(200).send(images);
+    res.status(200).send({ message: "Uploaded Images", data: images });
   } catch (error) {
     throw new Error(error);
   }
@@ -226,7 +236,7 @@ const deleteImages = asyncHandler(async (req, res) => {
   const { id } = req.params;
   try {
     const deleted = cloudinaryDeleteImg(id, "images");
-    res.status(200).send({ message: "The Image has been Deleted" });
+    res.status(200).send({ message: "Deleted Images", data: images });
   } catch (error) {
     throw new Error(error);
   }
