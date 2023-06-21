@@ -24,7 +24,7 @@ const getProductById = asyncHandler(async (req, res) => {
   const { id } = req.params;
   try {
     const findProduct = await Product.findById(id);
-    res.status(302).send({ message: "Product Founded", data: findProduct });
+    res.status(200).send({ message: "Product Founded", data: findProduct });
   } catch (error) {
     res.status(404).send({ status: 404, message: error.message });
   }
@@ -68,7 +68,7 @@ const getAllProducts = asyncHandler(async (req, res) => {
     console.log(page, limit, skip);
 
     const product = await query;
-    res.status(302).send({ message: "All Product Founded", data: product });
+    res.status(200).send({ message: "All Product Founded", data: product });
   } catch (error) {
     res.status(404).send({ status: 404, message: error.message });
   }
@@ -203,9 +203,11 @@ const ratingProduct = asyncHandler(async (req, res) => {
       { new: true }
     );
 
-    res.status(200).send(productWithRatings);
+    res
+      .status(200)
+      .send({ message: "Product Ratings", data: productWithRatings });
   } catch (error) {
-    res.status(400).send({ message: error.message });
+    res.status(400).send({ status: 400, message: error.message });
   }
 });
 
@@ -224,7 +226,7 @@ const uploadImages = asyncHandler(async (req, res) => {
     const images = urls.map((file) => {
       return file;
     });
-    res.status(200).send(images);
+    res.status(200).send({ message: "Uploaded Images", data: images });
   } catch (error) {
     throw new Error(error);
   }
@@ -234,7 +236,7 @@ const deleteImages = asyncHandler(async (req, res) => {
   const { id } = req.params;
   try {
     const deleted = cloudinaryDeleteImg(id, "images");
-    res.status(200).send({ message: "The Image has been Deleted" });
+    res.status(200).send({ message: "Deleted Images", data: images });
   } catch (error) {
     throw new Error(error);
   }
