@@ -175,9 +175,6 @@ const RefreshToken = asyncHandler(async (req, res) => {
     }
     
     const accessToken = TokenGenerator(user?._id, "1h");
-    res.status(200).send({ accessToken });
-
-    const accessToken = TokenGenerator(findUser?._id, "1h");
     res
       .status(200)
       .send({ message: "Token de Acceso Generado", data: accessToken });
