@@ -235,8 +235,8 @@ const uploadImages = asyncHandler(async (req, res) => {
 const deleteImages = asyncHandler(async (req, res) => {
   const { id } = req.params;
   try {
-    const deleted = cloudinaryDeleteImg(id, "images");
-    res.status(200).send({ message: "Deleted Images", data: images });
+    const deletedImage = cloudinaryDeleteImg(id, "images");
+    res.status(200).send({ message: "Deleted Images", data: deletedImage });
   } catch (error) {
     throw new Error(error);
   }

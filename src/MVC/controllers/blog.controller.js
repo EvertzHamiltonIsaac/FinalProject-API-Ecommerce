@@ -4,19 +4,27 @@ const validateMongoId = require("../../utils/validateMongoId");
 const cloudinaryUploadImg = require("../../utils/cloudinary");
 const fs = require("fs");
 
+/**
+ * ✅ //? Working Successfully.
+ * ❌ //? Not Working.
+ * ⚠ //? Bugged.
+ */
+
+//* Create Blog
 const createBlog = asyncHandler(async (req, res) => {
   try {
     const newBlog = await Blog.create(req.body);
 
     res.status(201).send({
       message: "New Blog Created Successfully",
-      data: [{ ...newBlog?._doc }],
+      data: newBlog?._doc,
     });
   } catch (error) {
     res.status(400).send({ status: 404, message: error.message });
   }
 });
 
+//* Update Blog
 const updateBlog = asyncHandler(async (req, res) => {
   const { id } = req.params;
   validateMongoId(id);
@@ -27,13 +35,14 @@ const updateBlog = asyncHandler(async (req, res) => {
 
     res.status(200).send({
       message: "Blog Update Successfully",
-      data: [{ ...updatedBlog?._doc }],
+      data: updatedBlog?._doc,
     });
   } catch (error) {
     res.status(400).send({ status: 404, message: error.message });
   }
 });
 
+//* Get Blog By Id
 const getBlogById = asyncHandler(async (req, res) => {
   const { id } = req.params;
   validateMongoId(id);
@@ -49,26 +58,28 @@ const getBlogById = asyncHandler(async (req, res) => {
 
     res.status(302).send({
       message: "Blog Found",
-      data: [{ ...blog?._doc }],
+      data: blog?._doc,
     });
   } catch (error) {
     res.status(404).send({ status: 404, message: error.message });
   }
 });
 
+//* Get All Blogs 
 const getAllBlogs = asyncHandler(async (req, res) => {
   try {
     const allBlogs = await Blog.find();
 
     res.status(302).send({
       message: "Blogs Found",
-      data: [...allBlogs],
+      data: allBlogs,
     });
   } catch (error) {
     res.status(404).send({ status: 404, message: error.message });
   }
 });
 
+//* Delete Blog 
 const deleteBlog = asyncHandler(async (req, res) => {
   const { id } = req.params;
   validateMongoId(id);
@@ -79,13 +90,14 @@ const deleteBlog = asyncHandler(async (req, res) => {
 
     res.status(200).send({
       message: "Blog Deleted Successfully",
-      data: [{ ...deletedBlog?._doc }],
+      data: deletedBlog?._doc,
     });
   } catch (error) {
     res.status(400).send({ status: 404, message: error.message });
   }
 });
 
+//* Like Blog 
 //? Limpiar Codigo
 const likeBlog = asyncHandler(async (req, res) => {
   const { blogId } = req.body;
@@ -141,10 +153,11 @@ const likeBlog = asyncHandler(async (req, res) => {
       },
       { new: true }
     );
-    res.status(200).send({ blogLiked });
+    res.status(200).send({ message: "Blog Disliked Successfully", data: blogLiked });
   }
 });
 
+//* Dislike Blog 
 //? Limpiar Codigo
 const disLikeBlog = asyncHandler(async (req, res) => {
   const { blogId } = req.body;
@@ -198,10 +211,11 @@ const disLikeBlog = asyncHandler(async (req, res) => {
     );
     res
       .status(200)
-      .send({ message: "Blog Liked Successfully", data: blogLiked });
+      .send({ message: "Blog Disliked Successfully", data: blogLiked });
   }
 });
 
+//* Upload blog Images 
 const uploadImages = asyncHandler(async (req, res) => {
   const { id } = req.params;
   validateMongoId(id);

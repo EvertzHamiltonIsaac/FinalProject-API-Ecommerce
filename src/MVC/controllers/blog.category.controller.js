@@ -3,12 +3,12 @@ const asyncHandler = require("express-async-handler");
 const validateMongoId = require("../../utils/validateMongoId");
 
 //* Create Category ✅
-const createCategory = asyncHandler(async (req, res) => {
+const createBlogCategory = asyncHandler(async (req, res) => {
   try {
-    const newCategory = await blogCategory.create(req.body);
+    const newBlogCategory = await blogCategory.create(req.body);
     res.status(200).send({
       message: "Blog Category Created Succesfully",
-      data: newCategory,
+      data: newBlogCategory,
     });
   } catch (error) {
     res.status(400).send({
@@ -19,17 +19,21 @@ const createCategory = asyncHandler(async (req, res) => {
 });
 
 //* Update Category ✅
-const updateCategory = asyncHandler(async (req, res) => {
+const updateBlogCategory = asyncHandler(async (req, res) => {
   const { id } = req.params;
   validateMongoId(id);
-  console.log(id);
+  // console.log(id);
   try {
-    const updatedCategory = await blogCategory.findByIdAndUpdate(id, req.body, {
-      new: true,
-    });
+    const updatedBlogCategory = await blogCategory.findByIdAndUpdate(
+      id,
+      req.body,
+      {
+        new: true,
+      }
+    );
     res.status(200).send({
       message: "Blog Category Updated Succesfully",
-      data: updatedCategory,
+      data: updatedBlogCategory,
     });
   } catch (error) {
     res.status(400).send({
@@ -40,14 +44,14 @@ const updateCategory = asyncHandler(async (req, res) => {
 });
 
 //* Delete Category ✅
-const deleteCategory = asyncHandler(async (req, res) => {
+const deleteBlogCategory = asyncHandler(async (req, res) => {
   const { id } = req.params;
   validateMongoId(id);
   try {
-    const deletedCategory = await blogCategory.findByIdAndDelete(id);
+    const deletedBlogCategory = await blogCategory.findByIdAndDelete(id);
     res.status(200).send({
       message: "Blog Category Deleted Succesfully",
-      data: deletedCategory,
+      data: deletedBlogCategory,
     });
   } catch (error) {
     res.status(400).send({
@@ -58,14 +62,14 @@ const deleteCategory = asyncHandler(async (req, res) => {
 });
 
 //* Get Category ✅
-const getCategory = asyncHandler(async (req, res) => {
+const getBlogCategory = asyncHandler(async (req, res) => {
   const { id } = req.params;
   validateMongoId(id);
   try {
-    const getaCategory = await blogCategory.findById(id);
+    const gettedBlogCategory = await blogCategory.findById(id);
     res.status(200).send({
       message: "Blog Category Found",
-      data: getaCategory,
+      data: gettedBlogCategory,
     });
   } catch (error) {
     res.status(400).send({
@@ -76,12 +80,12 @@ const getCategory = asyncHandler(async (req, res) => {
 });
 
 //* Get All Categories ✅
-const getAllCategories = asyncHandler(async (req, res) => {
+const getAllBlogCategories = asyncHandler(async (req, res) => {
   try {
-    const getallCategory = await blogCategory.find();
+    const AllBlogCategories = await blogCategory.find();
     res.status(200).send({
       message: "succes",
-      data: getallCategory,
+      data: AllBlogCategories,
     });
   } catch (error) {
     res.status(400).send({
@@ -92,9 +96,9 @@ const getAllCategories = asyncHandler(async (req, res) => {
 });
 
 module.exports = {
-  createCategory,
-  updateCategory,
-  deleteCategory,
-  getCategory,
-  getAllCategories,
+  createBlogCategory,
+  updateBlogCategory,
+  deleteBlogCategory,
+  getBlogCategory,
+  getAllBlogCategories,
 };

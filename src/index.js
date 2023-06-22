@@ -18,6 +18,7 @@ const dotenv = require("dotenv").config();
 const morgan = require("morgan");
 const { notFound, errorHandler } = require("./middlewares/error.middleware");
 const cookieParser = require("cookie-parser");
+const cors = require("cors")
 
 //* PORT Number
 const port = process.env.PORT || 9000;
@@ -26,6 +27,7 @@ const port = process.env.PORT || 9000;
 DBConnect();
 
 //* Configuration of app, this enable or make that the aplication use json files.
+app.use(cors())
 app.use(morgan("dev"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -46,6 +48,10 @@ app.use(`${baseURL}`, couponRouter);
 //* Handle Errors using middlewares.
 app.use(notFound);
 app.use(errorHandler);
+
+app.get('/', function (req, res, next) {
+  res.json({msg: 'All Working Fine'});
+})
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
