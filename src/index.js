@@ -49,7 +49,7 @@ app.use(`${baseURL}`, couponRouter);
 app.use(notFound);
 app.use(errorHandler);
 
-app.get('/', function (req, res, next) {
+app.get(baseURL, function (req, res, next) {
   res.json({msg: 'All Working Fine'});
 })
 
