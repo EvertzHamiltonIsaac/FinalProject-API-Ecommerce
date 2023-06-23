@@ -4,11 +4,11 @@ const { authMiddleware, isAdmin } = require("../../middlewares/authMiddleware");
 
 //Controllers
 const {
-  createCategory,
-  updateCategory,
-  deleteCategory,
-  getCategory,
-  getAllCategories,
+  createBlogCategory,
+  updateBlogCategory,
+  deleteBlogCategory,
+  getBlogCategory,
+  getAllBlogCategories,
 } = require("../controllers/blog.category.controller");
 //Controllers
 
@@ -16,25 +16,25 @@ router.post(
   "/blogCategory/createCategory",
   authMiddleware,
   isAdmin,
-  createCategory
+  createBlogCategory
 );
 
 router.put(
   "/blogCategory/updateCategory/:id",
   authMiddleware,
   isAdmin,
-  updateCategory
+  updateBlogCategory
 );
 
 router.delete(
   "/blogCategory/deleteCategory/:id",
   authMiddleware,
   isAdmin,
-  deleteCategory
+  deleteBlogCategory
 );
 
-router.get("/blogCategory/getaCategory/:id", authMiddleware, getCategory);
+router.get("/blogCategory/getaCategory/:id", authMiddleware, getBlogCategory);
 
-router.get("/blogCategory/getAllCategories", authMiddleware, getAllCategories);
+router.get("/blogCategory/getAllCategories", authMiddleware, getAllBlogCategories);
 
 module.exports = router;
