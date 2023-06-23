@@ -1,14 +1,8 @@
 const Blog = require("../models/blog.model");
 const asyncHandler = require("express-async-handler");
 const validateMongoId = require("../../utils/validateMongoId");
-const cloudinaryUploadImg = require("../../utils/cloudinary");
+const {cloudinaryUploadImg} = require("../../utils/cloudinary");
 const fs = require("fs");
-
-/**
- * ✅ //? Working Successfully.
- * ❌ //? Not Working.
- * ⚠ //? Bugged.
- */
 
 //* Create Blog ✅
 const createBlog = asyncHandler(async (req, res) => {
@@ -215,20 +209,19 @@ const disLikeBlog = asyncHandler(async (req, res) => {
   }
 });
 
-//* Upload blog Images ❌
+//* Upload blog Images ✅
 const uploadImages = asyncHandler(async (req, res) => {
   const { id } = req.params;
   validateMongoId(id);
-
+  
   try {
     const uploader = (path) => cloudinaryUploadImg(path, "images");
-    const urls = [];
     const files = req.files;
+    const urls = [];
     console.log(files);
     for (const file of files) {
       const { path } = file;
       const newPath = await uploader(path);
-      // console.log(newPath);
       urls.push(newPath);
       fs.unlinkSync(path);
     }
