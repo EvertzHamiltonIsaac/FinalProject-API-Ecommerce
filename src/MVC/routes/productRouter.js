@@ -13,16 +13,14 @@ const {
   getAllProducts,
   updateProduct,
   deleteProduct,
-  addToWishList,
   ratingProduct,
-  uploadImages,
+  uploadProductImages,
   deleteImages,
 } = require("../controllers/product.controller");
 
 router.get("/product", getAllProducts);
 
 router.post("/product", authMiddleware, isAdmin, createProduct);
-router.put("/wishlist", authMiddleware, addToWishList);
 router.put("/product/rating", authMiddleware, ratingProduct);
 
 router.get("/product/:id", getProductById);
@@ -35,7 +33,7 @@ router.put(
   isAdmin,
   uploadPhoto.any("images", 10),
   productImgResize,
-  uploadImages
+  uploadProductImages
 );
 router.delete("/product/delete-img/:id", authMiddleware, isAdmin, deleteImages);
 

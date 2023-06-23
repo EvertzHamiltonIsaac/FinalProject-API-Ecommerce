@@ -25,6 +25,7 @@ const {
   emptyCart,
   applyCoupon,
   createOrder,
+  addToWishList,
   getOrders,
   updateOrderStatus
 } = require("../controllers/user.controller");
@@ -35,6 +36,7 @@ const {
 // TODO: Auth
 router.post("/auth/register", registerUser);
 router.post("/auth/login", loginUser);
+
 router.get("/user/refresh-token", RefreshToken);
 router.post("/user/forgotPassword", forgotPasswordToken);
 router.get("/user/logout", logout);
@@ -46,6 +48,7 @@ router.post("/auth/login/admin", loginAdmin);
 
 router.get("/user/", getAllUsers);
 
+router.put("/wishlist", authMiddleware, addToWishList);
 router.get('/user/wishlist', authMiddleware, getWishList);
 router.get('/user/', authMiddleware, getWishList);
 router.get("/user/cart", authMiddleware, getUserCart);

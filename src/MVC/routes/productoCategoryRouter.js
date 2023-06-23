@@ -2,39 +2,39 @@ const express = require("express");
 const router = express.Router();
 const { authMiddleware, isAdmin } = require("../../middlewares/authMiddleware");
 
-//Controllers
+//! Controllers
 const {
-  createCategory,
-  updateCategory,
-  deleteCategory,
-  getCategory,
-  getAllCategories,
+  createProductCategory,
+  updateProductCategory,
+  deleteProductCategory,
+  getProductCategory,
+  getProductAllCategories,
 } = require("../controllers/producto.category.controller");
-//Controllers
+//! Controllers
 
 router.post(
   "/prodCategory/createCategory",
   authMiddleware,
   isAdmin,
-  createCategory
+  createProductCategory
 );
 
 router.put(
   "/prodCategory/updateCategory/:id",
   authMiddleware,
   isAdmin,
-  updateCategory
+  updateProductCategory
 );
 
 router.delete(
   "/prodCategory/deleteCategory/:id",
   authMiddleware,
   isAdmin,
-  deleteCategory
+  deleteProductCategory
 );
 
-router.get("/prodCategory/getaCategory/:id", authMiddleware, getCategory);
+router.get("/prodCategory/getaCategory/:id", authMiddleware, getProductCategory);
 
-router.get("/prodCategory/getAllCategories", authMiddleware, getAllCategories);
+router.get("/prodCategory/getAllCategories", authMiddleware, getProductAllCategories);
 
 module.exports = router;

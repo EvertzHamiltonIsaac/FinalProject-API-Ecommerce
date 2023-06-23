@@ -2,6 +2,7 @@ const Enquiry = require("../models/enquiry.model");
 const asyncHandler = require("express-async-handler");
 const validateMongoDbId = require("../../utils/validateMongoId");
 
+//TODO: OJITO, INDU ALERT!!! Puedes tomar el email del usuario logueado.
 const createEnquiry = asyncHandler(async (req, res) => {
   try {
     const newEnquiry = await Enquiry.create(req.body);
@@ -11,6 +12,7 @@ const createEnquiry = asyncHandler(async (req, res) => {
   }
 });
 
+//* Update Enquiry ✅
 const updateEnquiry = asyncHandler(async (req, res) => {
   const { id } = req.params;
   validateMongoDbId(id);
@@ -26,6 +28,7 @@ const updateEnquiry = asyncHandler(async (req, res) => {
   }
 });
 
+//* Delete Enquiry ✅
 const deleteEnquiry = asyncHandler(async (req, res) => {
   const { id } = req.params;
   validateMongoDbId(id);
@@ -40,6 +43,7 @@ const deleteEnquiry = asyncHandler(async (req, res) => {
   }
 });
 
+//* Get Enquiry ✅
 const getEnquiryById = asyncHandler(async (req, res) => {
   const { id } = req.params;
   validateMongoDbId(id);
@@ -52,6 +56,7 @@ const getEnquiryById = asyncHandler(async (req, res) => {
   }
 });
 
+//* Get All Enquiries ✅
 const getAllEnquiry = asyncHandler(async (req, res) => {
   try {
     const allEnquiry = await Enquiry.find();

@@ -10,7 +10,7 @@ const fs = require("fs");
  * ⚠ //? Bugged.
  */
 
-//* Create Blog
+//* Create Blog ✅
 const createBlog = asyncHandler(async (req, res) => {
   try {
     const newBlog = await Blog.create(req.body);
@@ -24,7 +24,7 @@ const createBlog = asyncHandler(async (req, res) => {
   }
 });
 
-//* Update Blog
+//* Update Blog ✅
 const updateBlog = asyncHandler(async (req, res) => {
   const { id } = req.params;
   validateMongoId(id);
@@ -42,7 +42,7 @@ const updateBlog = asyncHandler(async (req, res) => {
   }
 });
 
-//* Get Blog By Id
+//* Get Blog By Id ✅
 const getBlogById = asyncHandler(async (req, res) => {
   const { id } = req.params;
   validateMongoId(id);
@@ -65,7 +65,7 @@ const getBlogById = asyncHandler(async (req, res) => {
   }
 });
 
-//* Get All Blogs 
+//* Get All Blogs ✅ 
 const getAllBlogs = asyncHandler(async (req, res) => {
   try {
     const allBlogs = await Blog.find();
@@ -79,7 +79,7 @@ const getAllBlogs = asyncHandler(async (req, res) => {
   }
 });
 
-//* Delete Blog 
+//* Delete Blog ✅
 const deleteBlog = asyncHandler(async (req, res) => {
   const { id } = req.params;
   validateMongoId(id);
@@ -97,7 +97,7 @@ const deleteBlog = asyncHandler(async (req, res) => {
   }
 });
 
-//* Like Blog 
+//* Like Blog ✅
 //? Limpiar Codigo
 const likeBlog = asyncHandler(async (req, res) => {
   const { blogId } = req.body;
@@ -157,7 +157,7 @@ const likeBlog = asyncHandler(async (req, res) => {
   }
 });
 
-//* Dislike Blog 
+//* Dislike Blog ✅
 //? Limpiar Codigo
 const disLikeBlog = asyncHandler(async (req, res) => {
   const { blogId } = req.body;
@@ -215,7 +215,7 @@ const disLikeBlog = asyncHandler(async (req, res) => {
   }
 });
 
-//* Upload blog Images 
+//* Upload blog Images ❌
 const uploadImages = asyncHandler(async (req, res) => {
   const { id } = req.params;
   validateMongoId(id);
