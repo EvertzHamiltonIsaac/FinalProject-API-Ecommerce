@@ -1,5 +1,6 @@
 const Product = require("../models/product.model");
 const User = require("../models/user.model");
+
 const asyncHandler = require("express-async-handler");
 const slugify = require("slugify");
 const validateMongoDbId = require("../../utils/validateMongoId");
@@ -236,7 +237,7 @@ const deleteImages = asyncHandler(async (req, res) => {
   const { id } = req.params;
   try {
     const deleted = cloudinaryDeleteImg(id, "images");
-    res.status(200).send({ message: "Deleted Images", data: images });
+    res.status(200).send({ message: "Deleted Images", data: deleted });
   } catch (error) {
     throw new Error(error);
   }
