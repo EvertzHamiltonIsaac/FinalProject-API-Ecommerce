@@ -53,7 +53,7 @@ const getBrandById = asyncHandler(async (req, res) => {
   try {
     const brand = await Brand.findById(id);
 
-    res.status(302).send({
+    res.status(200).send({
       message: "Brand Found",
       data: brand,
     });
@@ -66,7 +66,7 @@ const getBrandById = asyncHandler(async (req, res) => {
 const getAllBrand = asyncHandler(async (req, res) => {
   try {
     const allbrand = await Brand.find();
-    res.status(302).send({
+    res.status(200).send({
       message: "All Brands Founded",
       data: allbrand,
     });

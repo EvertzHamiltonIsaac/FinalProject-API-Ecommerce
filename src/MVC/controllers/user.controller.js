@@ -210,7 +210,6 @@ const forgotPasswordToken = asyncHandler(async (req, res) => {
 });
 
 //* Reset Password ⚠️
-
 const resetPassword = asyncHandler(async (req, res) => {
   const { password } = req.body;
   const { token } = req.params;
@@ -243,7 +242,6 @@ const getAllUsers = asyncHandler(async (req, res) => {
 
 //* Get a Single User ✅
 const getUser = asyncHandler(async (req, res) => {
-  console.log(req.params);
   const { id } = req.params;
   validateMongoId(id);
   try {
@@ -254,7 +252,7 @@ const getUser = asyncHandler(async (req, res) => {
   }
 });
 
-// *Update User ✅
+// *Update User (User Looged) ✅
 const updateUser = asyncHandler(async (req, res) => {
   const { _id } = req.user;
   validateMongoId(_id);
@@ -316,7 +314,7 @@ const blockUser = asyncHandler(async (req, res) => {
   }
 });
 
-//* Unblock User ✅⚠️
+//* Unblock User ✅
 const unblockUser = asyncHandler(async (req, res) => {
   const { id } = req.params;
   validateMongoId(id);
@@ -355,7 +353,7 @@ const updatePassword = asyncHandler(async (req, res) => {
   }
 });
 
-//TODO: Wish List
+//TODO: Wish List ✅
 const addToWishList = asyncHandler(async (req, res) => {
   const { _id } = req.user;
   const { productId } = req.body;
@@ -402,7 +400,7 @@ const addToWishList = asyncHandler(async (req, res) => {
   }
 });
 
-//* Get Wish List ✅⚠️
+//* Get Wish List ✅
 const getWishList = asyncHandler(async (req, res) => {
   const { _id } = req.user;
   try {
@@ -415,6 +413,8 @@ const getWishList = asyncHandler(async (req, res) => {
   }
 });
 
+//! No esta en el Postman ❌
+//* Save Address ✅
 const saveAddress = asyncHandler(async (req, res) => {
   const { _id } = req.user;
   validateMongoId(_id);
