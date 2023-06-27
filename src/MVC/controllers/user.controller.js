@@ -246,7 +246,7 @@ const getUser = asyncHandler(async (req, res) => {
   validateMongoId(id);
   try {
     const getaUser = await User.findById(id);
-    res.status(302).send({ message: "User Found", data: getaUser });
+    res.status(200).send({ message: "User Found", data: getaUser });
   } catch (error) {
     res.status(404).send({ status: 404, message: error.message });
   }
@@ -406,7 +406,7 @@ const getWishList = asyncHandler(async (req, res) => {
   try {
     const findUser = await User.findById(_id).populate("wishlist");
     res
-      .status(302)
+      .status(200)
       .send({ message: "WishList Founded Successfully", data: findUser });
   } catch (error) {
     throw new Error(error.message);
@@ -488,7 +488,7 @@ const getUserCart = asyncHandler(async (req, res) => {
       "products.product",
       "_id title price totalAfterDiscount"
     );
-    res.status(302).send({ message: "User Cart Founded ", data: cart });
+    res.status(200).send({ message: "User Cart Founded ", data: cart });
   } catch (error) {
     throw new Error(error);
   }
@@ -501,7 +501,7 @@ const emptyCart = asyncHandler(async (req, res) => {
     const user = await User.findOne({ _id });
     const cart = await Cart.findOneAndRemove({ orderBy: _id });
 
-    res.status(302).send({ message: "Cart Empty Successfully", data: cart });
+    res.status(200).send({ message: "Cart Empty Successfully", data: cart });
   } catch (error) {
     throw new Error(error);
   }
