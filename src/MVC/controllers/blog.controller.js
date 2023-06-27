@@ -50,7 +50,7 @@ const getBlogById = asyncHandler(async (req, res) => {
       { new: true }
     );
 
-    res.status(302).send({
+    res.status(200).send({
       message: "Blog Found",
       data: blog?._doc,
     });
@@ -64,7 +64,7 @@ const getAllBlogs = asyncHandler(async (req, res) => {
   try {
     const allBlogs = await Blog.find();
 
-    res.status(302).send({
+    res.status(200).send({
       message: "Blogs Found",
       data: allBlogs,
     });
