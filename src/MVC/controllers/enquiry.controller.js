@@ -42,7 +42,7 @@ const deleteEnquiry = asyncHandler(async (req, res) => {
     res.status(400).send({ status: 400, message: error.message });
   }
 });
-
+200
 //* Get Enquiry ✅
 const getEnquiryById = asyncHandler(async (req, res) => {
   const { id } = req.params;
@@ -50,7 +50,7 @@ const getEnquiryById = asyncHandler(async (req, res) => {
   try {
     const enquiry = await Enquiry.findById(id);
 
-    res.status(302).send({ message: "Enquiry Fuounded", data: enquiry });
+    res.status(200).send({ message: "Enquiry Fuounded", data: enquiry });
   } catch (error) {
     res.status(404).send({ status: 404, message: error.message });
   }
@@ -61,7 +61,7 @@ const getAllEnquiry = asyncHandler(async (req, res) => {
   try {
     const allEnquiry = await Enquiry.find();
     res
-      .status(302)
+      .status(200)
       .send({ message: "All Enquiries Fuounded", data: allEnquiry });
   } catch (error) {
     res.status(404).send({ status: 404, message: error.message });
