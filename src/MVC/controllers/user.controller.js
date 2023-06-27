@@ -600,6 +600,20 @@ const getOrders = asyncHandler(async (req, res) => {
   }
 });
 
+const getAllOrders = asyncHandler(async (req, res) => {
+  try {
+    const AllUserOrders = await Order.find()
+      .populate("products.product")
+      .populate("orderBy")
+      .exec();
+    res
+      .status(200)
+      .send({ message: "All Orders Founded Successfully", data: AllUserOrders });
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
 const updateOrderStatus = asyncHandler(async (req, res) => {
   const { status } = req.body;
   const { id } = req.params;
@@ -647,5 +661,6 @@ module.exports = {
   applyCoupon,
   createOrder,
   getOrders,
+  getAllOrders,
   updateOrderStatus,
 };
