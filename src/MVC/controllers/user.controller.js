@@ -593,7 +593,7 @@ const getOrders = asyncHandler(async (req, res) => {
       .populate("products.product")
       .exec();
     res
-      .status(301)
+      .status(200)
       .send({ message: "Order Founded Successfully", data: userOrders });
   } catch (error) {
     throw new Error(error);
