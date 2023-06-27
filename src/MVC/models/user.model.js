@@ -45,10 +45,10 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    cart: {
-      type: Array,
-      default: [{ type: mongoose.Schema.Types.ObjectId, ref: "Cart" }],
-    },
+    cart: [{ 
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Cart",
+    }],
     // address: {
     //   type: String,    
     // },
