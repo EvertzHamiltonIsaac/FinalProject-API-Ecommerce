@@ -45,13 +45,13 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    cart: {
-      type: Array,
-      default: [],
-    },
-    address: {
-      type: String,    
-    },
+    cart: [{ 
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Cart",
+    }],
+    // address: {
+    //   type: String,    
+    // },
     wishlist: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }],
     refreshToken: {
       type: String,

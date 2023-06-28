@@ -2,7 +2,6 @@ const Color = require("../models/color.model");
 const asyncHandler = require("express-async-handler");
 const validateMongoDbId = require("../../utils/validateMongoId");
 
-
 //* Create Color ✅
 const createColor = asyncHandler(async (req, res) => {
   try {
@@ -54,7 +53,7 @@ const getColorById = asyncHandler(async (req, res) => {
   try {
     const color = await Color.findById(id);
 
-    res.status(302).send({
+    res.status(200).send({
       message: "Color Found",
       data: color,
     });
@@ -67,7 +66,7 @@ const getColorById = asyncHandler(async (req, res) => {
 const getAllColor = asyncHandler(async (req, res) => {
   try {
     const allColor = await Color.find();
-    res.status(302).send({
+    res.status(200).send({
       message: "All Colors Founded",
       data: allColor,
     });

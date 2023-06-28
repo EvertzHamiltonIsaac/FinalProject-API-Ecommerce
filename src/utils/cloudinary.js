@@ -7,7 +7,7 @@ cloudinary.config({
 });
 
 const cloudinaryUploadImg = async (fileToUploads) => {
-  console.log(fileToUploads);
+  // console.log(fileToUploads);
   return new Promise((resolve) => {
     cloudinary.uploader.upload(fileToUploads, (result) => {
       resolve(
@@ -24,7 +24,7 @@ const cloudinaryUploadImg = async (fileToUploads) => {
   });
 };
 const cloudinaryDeleteImg = async (fileToDelete) => {
-  console.log(fileToDelete);
+  // console.log(fileToDelete);
   return new Promise((resolve) => {
     cloudinary.uploader.destroy(fileToDelete, (result) => {
       resolve(

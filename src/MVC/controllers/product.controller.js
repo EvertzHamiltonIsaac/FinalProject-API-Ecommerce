@@ -1,5 +1,4 @@
 const Product = require("../models/product.model");
-const User = require("../models/user.model");
 const asyncHandler = require("express-async-handler");
 const slugify = require("slugify");
 const validateMongoDbId = require("../../utils/validateMongoId");
@@ -79,6 +78,7 @@ const getAllProducts = asyncHandler(async (req, res) => {
 //* Update Product ✅
 const updateProduct = asyncHandler(async (req, res) => {
   const { id } = req.params;
+
   validateMongoDbId(id);
   try {
     if (req.body.title) {

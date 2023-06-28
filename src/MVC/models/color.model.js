@@ -2,7 +2,13 @@ const mongoose = require("mongoose");
 
 const colorSchema = new mongoose.Schema(
   {
-    title: {
+    name: {
+      type: String,
+      required: true,
+      unique: true,
+      index: true,
+    },
+    code: {
       type: String,
       required: true,
       unique: true,

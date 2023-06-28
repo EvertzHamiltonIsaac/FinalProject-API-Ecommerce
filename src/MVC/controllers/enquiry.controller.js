@@ -2,6 +2,7 @@ const Enquiry = require("../models/enquiry.model");
 const asyncHandler = require("express-async-handler");
 const validateMongoDbId = require("../../utils/validateMongoId");
 
+//TODO: OJITO!!! Puedes tomar el email del usuario logueado.
 const createEnquiry = asyncHandler(async (req, res) => {
   try {
     const newEnquiry = await Enquiry.create(req.body);
@@ -11,6 +12,7 @@ const createEnquiry = asyncHandler(async (req, res) => {
   }
 });
 
+//* Update Enquiry ✅
 const updateEnquiry = asyncHandler(async (req, res) => {
   const { id } = req.params;
   validateMongoDbId(id);
@@ -26,6 +28,7 @@ const updateEnquiry = asyncHandler(async (req, res) => {
   }
 });
 
+//* Delete Enquiry ✅
 const deleteEnquiry = asyncHandler(async (req, res) => {
   const { id } = req.params;
   validateMongoDbId(id);
@@ -40,23 +43,25 @@ const deleteEnquiry = asyncHandler(async (req, res) => {
   }
 });
 
+//* Get Enquiry ✅
 const getEnquiryById = asyncHandler(async (req, res) => {
   const { id } = req.params;
   validateMongoDbId(id);
   try {
     const enquiry = await Enquiry.findById(id);
 
-    res.status(302).send({ message: "Enquiry Fuounded", data: enquiry });
+    res.status(200).send({ message: "Enquiry Fuounded", data: enquiry });
   } catch (error) {
     res.status(404).send({ status: 404, message: error.message });
   }
 });
 
+//* Get All Enquiries ✅
 const getAllEnquiry = asyncHandler(async (req, res) => {
   try {
     const allEnquiry = await Enquiry.find();
     res
-      .status(302)
+      .status(200)
       .send({ message: "All Enquiries Fuounded", data: allEnquiry });
   } catch (error) {
     res.status(404).send({ status: 404, message: error.message });

@@ -173,7 +173,7 @@ const RefreshToken = asyncHandler(async (req, res) => {
     if (err || user.id !== decoded.id) {
       throw new Error("There is something wrong with refresh token");
     }
-    const accessToken = TokenGenerator(findUser?._id, "1h");
+    const accessToken = TokenGenerator(user?._id, "1h");
     res
       .status(200)
       .send({ message: "Token de Acceso Generado", data: accessToken });
@@ -207,7 +207,6 @@ const forgotPasswordToken = asyncHandler(async (req, res) => {
 });
 
 //* Reset Password ⚠️
-
 const resetPassword = asyncHandler(async (req, res) => {
   const { password } = req.body;
   const { token } = req.params;
@@ -240,18 +239,17 @@ const getAllUsers = asyncHandler(async (req, res) => {
 
 //* Get a Single User ✅
 const getUser = asyncHandler(async (req, res) => {
-  console.log(req.params);
   const { id } = req.params;
   validateMongoId(id);
   try {
     const getaUser = await User.findById(id);
-    res.status(302).send({ message: "User Found", data: getaUser });
+    res.status(200).send({ message: "User Found", data: getaUser });
   } catch (error) {
     res.status(404).send({ status: 404, message: error.message });
   }
 });
 
-// *Update User ✅
+// *Update User (User Looged) ✅
 const updateUser = asyncHandler(async (req, res) => {
   const { _id } = req.user;
   validateMongoId(_id);
@@ -313,7 +311,7 @@ const blockUser = asyncHandler(async (req, res) => {
   }
 });
 
-//* Unblock User ✅⚠️
+//* Unblock User ✅
 const unblockUser = asyncHandler(async (req, res) => {
   const { id } = req.params;
   validateMongoId(id);
@@ -352,19 +350,68 @@ const updatePassword = asyncHandler(async (req, res) => {
   }
 });
 
-//* Get Wish List ✅⚠️
+//TODO: Wish List ✅
+const addToWishList = asyncHandler(async (req, res) => {
+  const { _id } = req.user;
+  const { productId } = req.body;
+
+  try {
+    const user = await User.findById(_id);
+    const alreadyAdded = user.wishlist.find(
+      (id) => id.toString() === productId
+    );
+
+    if (alreadyAdded) {
+      let user = await User.findByIdAndUpdate(
+        _id,
+        {
+          $pull: { wishlist: productId },
+        },
+        {
+          new: true,
+        }
+      );
+
+      res.status(200).send({
+        message: "Product Added to the Wishlist Successfully",
+        data: user,
+      });
+    } else {
+      let user = await User.findByIdAndUpdate(
+        _id,
+        {
+          $push: { wishlist: productId },
+        },
+        {
+          new: true,
+        }
+      );
+
+      res.status(200).send({
+        message: "Product Added to the Wishlist Successfully",
+        data: user,
+      });
+    }
+  } catch (error) {
+    res.status(400).send({ status: 400, message: error.message });
+  }
+});
+
+//* Get Wish List ✅
 const getWishList = asyncHandler(async (req, res) => {
   const { _id } = req.user;
   try {
     const findUser = await User.findById(_id).populate("wishlist");
     res
-      .status(302)
+      .status(200)
       .send({ message: "WishList Founded Successfully", data: findUser });
   } catch (error) {
     throw new Error(error.message);
   }
 });
 
+//! No esta en el Postman ❌
+//* Save Address ✅
 const saveAddress = asyncHandler(async (req, res) => {
   const { _id } = req.user;
   validateMongoId(_id);
@@ -438,7 +485,7 @@ const getUserCart = asyncHandler(async (req, res) => {
       "products.product",
       "_id title price totalAfterDiscount"
     );
-    res.status(302).send({ message: "User Cart Founded ", data: cart });
+    res.status(200).send({ message: "User Cart Founded ", data: cart });
   } catch (error) {
     throw new Error(error);
   }
@@ -451,7 +498,7 @@ const emptyCart = asyncHandler(async (req, res) => {
     const user = await User.findOne({ _id });
     const cart = await Cart.findOneAndRemove({ orderBy: _id });
 
-    res.status(302).send({ message: "Cart Empty Successfully", data: cart });
+    res.status(200).send({ message: "Cart Empty Successfully", data: cart });
   } catch (error) {
     throw new Error(error);
   }
@@ -543,8 +590,22 @@ const getOrders = asyncHandler(async (req, res) => {
       .populate("products.product")
       .exec();
     res
-      .status(301)
+      .status(200)
       .send({ message: "Order Founded Successfully", data: userOrders });
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
+const getAllOrders = asyncHandler(async (req, res) => {
+  try {
+    const AllUserOrders = await Order.find()
+      .populate("products.product")
+      .populate("orderBy")
+      .exec();
+    res
+      .status(200)
+      .send({ message: "All Orders Founded Successfully", data: AllUserOrders });
   } catch (error) {
     throw new Error(error);
   }
@@ -584,6 +645,7 @@ module.exports = {
   unblockUser,
   RefreshToken,
   logout,
+  addToWishList,
   updatePassword,
   forgotPasswordToken,
   resetPassword,
@@ -596,5 +658,6 @@ module.exports = {
   applyCoupon,
   createOrder,
   getOrders,
+  getAllOrders,
   updateOrderStatus,
 };
