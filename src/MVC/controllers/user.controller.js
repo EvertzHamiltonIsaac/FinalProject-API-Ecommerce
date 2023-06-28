@@ -173,13 +173,11 @@ const RefreshToken = asyncHandler(async (req, res) => {
     if (err || user.id !== decoded.id) {
       throw new Error("There is something wrong with refresh token");
     }
-    
     const accessToken = TokenGenerator(user?._id, "1h");
     res
       .status(200)
       .send({ message: "Token de Acceso Generado", data: accessToken });
   });
-  
 });
 
 //* Forgot Password ⚠️
@@ -194,8 +192,7 @@ const forgotPasswordToken = asyncHandler(async (req, res) => {
   try {
     const token = await user.createPasswordResetToken();
     await user.save();
-    const resetURL =
-      `Hi, Please follow this link to reset your password. This link is valid till 10 minutes from now. < href='http://127.0.0.1:3000/api/v1/user/updatePassword/${token}'>Click Here</>`;
+    const resetURL = `Hi, Please follow this link to reset your password. This link is valid till 10 minutes from now. < href='http://127.0.0.1:3000/api/v1/user/updatePassword/${token}'>Click Here</>`;
     const data = {
       to: email,
       text: "Hey User",
