@@ -3,12 +3,9 @@ const User = require("../models/user.model");
 const asyncHandler = require("express-async-handler");
 const slugify = require("slugify");
 const validateMongoDbId = require("../../utils/validateMongoId");
-const {
-  cloudinaryUploadImg,
-  cloudinaryDeleteImg,
-} = require("../../utils/cloudinary");
 const fs = require("fs");
 
+//* Create Product ✅
 const createProduct = asyncHandler(async (req, res) => {
   try {
     if (req.body.title) {
@@ -20,8 +17,11 @@ const createProduct = asyncHandler(async (req, res) => {
     res.status(400).send({ status: 400, message: error.message });
   }
 });
+
+//* Get Product ✅
 const getProductById = asyncHandler(async (req, res) => {
   const { id } = req.params;
+  validateMongoDbId(id);
   try {
     const findProduct = await Product.findById(id);
     res.status(200).send({ message: "Product Founded", data: findProduct });
@@ -29,6 +29,8 @@ const getProductById = asyncHandler(async (req, res) => {
     res.status(404).send({ status: 404, message: error.message });
   }
 });
+
+//* Get All Products ✅
 const getAllProducts = asyncHandler(async (req, res) => {
   try {
     const queryOj = { ...req.query };
@@ -73,8 +75,11 @@ const getAllProducts = asyncHandler(async (req, res) => {
     res.status(404).send({ status: 404, message: error.message });
   }
 });
+
+//* Update Product ✅
 const updateProduct = asyncHandler(async (req, res) => {
   const { id } = req.params;
+  validateMongoDbId(id);
   try {
     if (req.body.title) {
       req.body.slug = slugify(req.body.title);
@@ -91,8 +96,11 @@ const updateProduct = asyncHandler(async (req, res) => {
     res.status(400).send({ status: 400, message: error.message });
   }
 });
+
+//* Delete Product ✅
 const deleteProduct = asyncHandler(async (req, res) => {
   const { id } = req.params;
+  validateMongoDbId(id);
   try {
     const deletedProduct = await Product.findOneAndDelete(id);
     res
@@ -103,55 +111,10 @@ const deleteProduct = asyncHandler(async (req, res) => {
   }
 });
 
-//TODO: Wish List
-const addToWishList = asyncHandler(async (req, res) => {
-  const { _id } = req.user;
-  const { productId } = req.body;
-
-  try {
-    const user = await User.findById(_id);
-    const alreadyAdded = user.wishlist.find(
-      (id) => id.toString() === productId
-    );
-
-    if (alreadyAdded) {
-      let user = await User.findByIdAndUpdate(
-        _id,
-        {
-          $pull: { wishlist: productId },
-        },
-        {
-          new: true,
-        }
-      );
-
-      res.status(200).send({
-        message: "Product Added to the Wishlist Successfully",
-        data: user,
-      });
-    } else {
-      let user = await User.findByIdAndUpdate(
-        _id,
-        {
-          $push: { wishlist: productId },
-        },
-        {
-          new: true,
-        }
-      );
-
-      res.status(200).send({
-        message: "Product Added to the Wishlist Successfully",
-        data: user,
-      });
-    }
-  } catch (error) {
-    res.status(400).send({ status: 400, message: error.message });
-  }
-});
-
+//* Rating Product ✅
 const ratingProduct = asyncHandler(async (req, res) => {
   const { _id } = req.user;
+  validateMongoDbId(_id);
   const { stars, productId, comment } = req.body;
 
   const product = await Product.findById(productId);
@@ -211,45 +174,11 @@ const ratingProduct = asyncHandler(async (req, res) => {
   }
 });
 
-const uploadImages = asyncHandler(async (req, res) => {
-  try {
-    const uploader = (path) => cloudinaryUploadImg(path, "images");
-    const files = req.files;
-    const urls = [];
-    for (const file of files) {
-      const { path } = file;
-      const newPath = await uploader(path);
-      // console.log(newPath);
-      urls.push(newPath);
-      fs.unlinkSync(path);
-    }
-    const images = urls.map((file) => {
-      return file;
-    });
-    res.status(200).send({ message: "Uploaded Images", data: images });
-  } catch (error) {
-    throw new Error(error);
-  }
-});
-
-const deleteImages = asyncHandler(async (req, res) => {
-  const { id } = req.params;
-  try {
-    const deleted = cloudinaryDeleteImg(id, "images");
-    res.status(200).send({ message: "Deleted Images", data: images });
-  } catch (error) {
-    throw new Error(error);
-  }
-});
-
 module.exports = {
   createProduct,
   getProductById,
   getAllProducts,
   updateProduct,
   deleteProduct,
-  addToWishList,
   ratingProduct,
-  uploadImages,
-  deleteImages,
 };
