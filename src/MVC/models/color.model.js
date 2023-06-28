@@ -11,7 +11,7 @@ const colorSchema = new mongoose.Schema(
     code: {
       type: String,
       required: true,
-      unique: true,
+      // unique: true,
     },
   },
   {
