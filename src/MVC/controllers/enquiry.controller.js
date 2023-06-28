@@ -2,7 +2,7 @@ const Enquiry = require("../models/enquiry.model");
 const asyncHandler = require("express-async-handler");
 const validateMongoDbId = require("../../utils/validateMongoId");
 
-//TODO: OJITO, INDU ALERT!!! Puedes tomar el email del usuario logueado.
+//TODO: OJITO!!! Puedes tomar el email del usuario logueado.
 const createEnquiry = asyncHandler(async (req, res) => {
   try {
     const newEnquiry = await Enquiry.create(req.body);
@@ -42,7 +42,7 @@ const deleteEnquiry = asyncHandler(async (req, res) => {
     res.status(400).send({ status: 400, message: error.message });
   }
 });
-200
+
 //* Get Enquiry ✅
 const getEnquiryById = asyncHandler(async (req, res) => {
   const { id } = req.params;

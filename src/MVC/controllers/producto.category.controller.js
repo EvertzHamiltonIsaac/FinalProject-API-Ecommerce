@@ -2,6 +2,7 @@ const Category = require("../models/producto.category.model");
 const asyncHandler = require("express-async-handler");
 const validateMongoId = require("../../utils/validateMongoId");
 
+//* Create Product Category ✅
 const createProductCategory = asyncHandler(async (req, res) => {
   try {
     const newCategory = await Category.create(req.body);
@@ -16,6 +17,7 @@ const createProductCategory = asyncHandler(async (req, res) => {
   }
 });
 
+//* Update Product Category ✅
 const updateProductCategory = asyncHandler(async (req, res) => {
   const { id } = req.params;
   validateMongoId(id);
@@ -34,6 +36,7 @@ const updateProductCategory = asyncHandler(async (req, res) => {
   }
 });
 
+//* Delete Product Category ✅
 const deleteProductCategory = asyncHandler(async (req, res) => {
   const { id } = req.params;
   validateMongoId(id);
@@ -50,6 +53,7 @@ const deleteProductCategory = asyncHandler(async (req, res) => {
   }
 });
 
+//* Get Product Category ✅
 const getProductCategory = asyncHandler(async (req, res) => {
   const { id } = req.params;
   validateMongoId(id);
@@ -66,6 +70,7 @@ const getProductCategory = asyncHandler(async (req, res) => {
   }
 });
 
+//* Get Product All Categories ✅
 const getProductAllCategories = asyncHandler(async (req, res) => {
   try {
     const getallCategory = await Category.find();

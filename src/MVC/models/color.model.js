@@ -8,12 +8,12 @@ const colorSchema = new mongoose.Schema(
       unique: true,
       index: true,
     },
-    // code: {
-    //   type: String,
-    //   required: true,
-    //   unique: true,
-    //   index: true,
-    // },
+    code: {
+      type: String,
+      required: true,
+      unique: true,
+      index: true,
+    },
   },
   {
     timestamps: true,
