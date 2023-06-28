@@ -6,12 +6,12 @@ const colorSchema = new mongoose.Schema(
       type: String,
       required: true,
       unique: true,
-      // index: true,
+      index: true,
     },
     code: {
       type: String,
       required: true,
-      // unique: true,
+      unique: true,
     },
   },
   {
