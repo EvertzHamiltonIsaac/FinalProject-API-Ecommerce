@@ -22,7 +22,7 @@ const uploadImages = asyncHandler(async (req, res) => {
     });
     res.status(200).send({ message: "Uploaded Images", data: images });
   } catch (error) {
-    throw new Error(error);
+    res.status(400).send({ message: error.message, error: error});
   }
 });
 
