@@ -1,23 +1,23 @@
 //* Routers
-const userRouter = require("./MVC/routes/userRouter");
-const productRouter = require("./MVC/routes/productRouter");
-const blogRouter = require("./MVC/routes/blogRouter");
-const productoCategoryRouter = require("./MVC/routes/productoCategoryRouter");
-const blogCategoryRouter = require("./MVC/routes/blogCategoryRouter");
-const brandRouter = require("./MVC/routes/brandRouter");
-const colorRouter = require("./MVC/routes/colorRouter");
-const couponRouter = require("./MVC/routes/couponRouter");
-const enquiryRouter = require("./MVC/routes/enquiryRouter");
-const uploadImgRouter = require("./MVC/routes/uploadImgRouter");
+const userRouter = require("./src/MVC/routes/userRouter");
+const productRouter = require("./src/MVC/routes/productRouter");
+const blogRouter = require("./src/MVC/routes/blogRouter");
+const productoCategoryRouter = require("./src/MVC/routes/productoCategoryRouter");
+const blogCategoryRouter = require("./src/MVC/routes/blogCategoryRouter");
+const brandRouter = require("./src/MVC/routes/brandRouter");
+const colorRouter = require("./src/MVC/routes/colorRouter");
+const couponRouter = require("./src/MVC/routes/couponRouter");
+const enquiryRouter = require("./src/MVC/routes/enquiryRouter");
+const uploadImgRouter = require("./src/MVC/routes/uploadImgRouter");
 //* Routers
 
 const express = require("express");
-const DBConnect = require("./config/DBConnection");
+const DBConnect = require("./src/config/DBConnection");
 const bodyParser = require("body-parser");
 const app = express();
 const dotenv = require("dotenv").config();
 const morgan = require("morgan");
-const { notFound, errorHandler } = require("./middlewares/error.middleware");
+const { notFound, errorHandler } = require("./src/middlewares/error.middleware");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 
