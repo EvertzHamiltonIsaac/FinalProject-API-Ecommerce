@@ -13,13 +13,13 @@ const {
 } = require("../controllers/uploadIMG.controller");
 
 router.post(
-  "/UpIMG/uploadImg",
+  "/uploadImg",
   authMiddleware,
   isAdmin,
   uploadPhoto.any("images", 10),
   productImgResize,
   uploadImages
 );
-router.delete("/UpIMG/delete-img/:id", authMiddleware, isAdmin, deleteImages);
+router.delete("/delete-img/:id", authMiddleware, isAdmin, deleteImages);
 
 module.exports = router;
