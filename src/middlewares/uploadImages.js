@@ -22,9 +22,9 @@ const multerFilter = (req, file, cb) => {
 };
 
 const uploadPhoto = multer({
-  // storage: storage,
-  filefilter: multerFilter,
-  limits: { fieldSize: 2000000 },
+  storage: storage,
+  // filefilter: multerFilter,
+  // limits: { fieldSize: 2000000 },
 });
 
 const productImgResize = async (req, res, next) => {
