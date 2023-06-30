@@ -14,7 +14,7 @@ const storage = multer.diskStorage({
 });
 
 const multerFilter = (req, file, cb) => {
-  if (file.mimetype.startsWith("image")) {
+  if (file.mimetype.startsWith("Images")) {
     cb(null, true);
   } else {
     cb({ message: "Unsopported file format" }, false);
@@ -38,10 +38,10 @@ const productImgResize = async (req, res, next) => {
         .toFormat("jpeg")
         .jpeg({ quality: 90 })
         .toFile(
-          path.join(__dirname, `../../public/images/${file.filename}`)
+          path.join(__dirname, `../../public/images/products/${file.filename}`)
         );
       fs.unlinkSync(
-        path.join(__dirname, `../../public/images/${file.filename}`)
+        path.join(__dirname, `../../public/images/products/${file.filename}`)
       );
     })
   );
