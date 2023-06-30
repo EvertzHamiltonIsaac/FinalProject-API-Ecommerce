@@ -16,7 +16,7 @@ router.post(
   "/image/upload",
   authMiddleware,
   isAdmin,
-  // uploadPhoto.any("images", 10),
+  uploadPhoto.any("images", 10),
   productImgResize,
   uploadImages
 );
