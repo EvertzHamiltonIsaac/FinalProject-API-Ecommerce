@@ -17,7 +17,7 @@ router.post(
   authMiddleware,
   isAdmin,
   uploadPhoto.any("images", 10),
-  productImgResize,
+  // productImgResize,
   uploadImages
 );
 router.delete("/image/delete/:id", authMiddleware, isAdmin, deleteImages);
