@@ -5,7 +5,7 @@ const fs = require("fs");
 //path.join(__dirname, "./src/public/images/")
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, path.join(__dirname, "../../public/images/"));
+    cb(null, path.join(__dirname, "../public/images/"));
   },
   filename: function (req, file, cb) {
     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
@@ -38,10 +38,10 @@ const productImgResize = async (req, res, next) => {
         .toFormat("jpeg")
         .jpeg({ quality: 90 })
         .toFile(
-          path.join(__dirname, `../../public/images/products/${file.filename}`)
+          path.join(__dirname, `../public/images/products/${file.filename}`)
         );
       fs.unlinkSync(
-        path.join(__dirname, `../../public/images/products/${file.filename}`)
+        path.join(__dirname, `../public/images/products/${file.filename}`)
       );
     })
   );
