@@ -21,6 +21,7 @@ const uploadImages = asyncHandler(async (req, res) => {
     const images = urls.map((file) => {
       return file;
     });
+    
     res.status(200).send({ message: "Uploaded Images", data: images });
   } catch (error) {
     throw new Error(error);
