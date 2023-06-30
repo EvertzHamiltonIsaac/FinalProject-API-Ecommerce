@@ -3,10 +3,11 @@ const sharp = require("sharp");
 const path = require("path");
 const fs = require("fs");
 //path.join(__dirname, "./src/public/images/")
+
 const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, path.join(__dirname, "../public/images/"));
-  },
+  // destination: function (req, file, cb) {
+  //   cb(null, path.join(__dirname, "../public/images/"));
+  // },
   filename: function (req, file, cb) {
     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
     cb(null, file.fieldname + "-" + uniqueSuffix + ".jpeg");
@@ -23,8 +24,8 @@ const multerFilter = (req, file, cb) => {
 
 const uploadPhoto = multer({
   storage: storage,
-  // filefilter: multerFilter,
-  // limits: { fieldSize: 2000000 },
+  filefilter: multerFilter,
+  limits: { fieldSize: 2000000 },
 });
 
 const productImgResize = async (req, res, next) => {
