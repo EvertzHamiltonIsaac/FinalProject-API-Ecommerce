@@ -42,9 +42,9 @@ const productImgResize = async (req, res, next) => {
         .toFile(
           path.join(__dirname, `../../public/images/products/${file.filename}`)
         );
-      // fs.unlinkSync(
-      //   path.join(__dirname, `../public/images/products/${file.filename}`)
-      // );
+      fs.unlinkSync(
+        path.join(__dirname, `../public/images/products/${file.filename}`)
+      );
     })
   );
   next();
