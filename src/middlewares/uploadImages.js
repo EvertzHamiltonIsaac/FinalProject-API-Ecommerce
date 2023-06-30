@@ -38,10 +38,10 @@ const productImgResize = async (req, res, next) => {
         .toFormat("jpeg")
         .jpeg({ quality: 90 })
         .toFile(
-          path.join(__dirname, `../../public/images/products/${file.filename}`)
+          path.join(__dirname, `../../public/images/${file.filename}`)
         );
       fs.unlinkSync(
-        path.join(__dirname, `../../public/images/products/${file.filename}`)
+        path.join(__dirname, `../../public/images/${file.filename}`)
       );
     })
   );
