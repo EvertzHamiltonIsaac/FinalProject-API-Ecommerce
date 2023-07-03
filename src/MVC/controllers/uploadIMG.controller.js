@@ -22,7 +22,7 @@ const uploadImages = asyncHandler(async (req, res) => {
       return file;
     });
 
-    res.status(200).send({ message: "Uploaded Images", data: images });
+    res.status(200).send({ message: "Uploaded Images", data: [images] });
   } catch (error) {
     // res.status(400).send({ message: error.message });
     throw new Error(error);
@@ -34,7 +34,7 @@ const deleteImages = asyncHandler(async (req, res) => {
   const { id } = req.params;
   try {
     const deleted = cloudinaryDeleteImg(id, "images");
-    res.status(200).send({ message: "Deleted Images", data: deleted });
+    res.status(200).send({ message: "Deleted Images", data: [deleted] });
   } catch (error) {
     throw new Error(error);
   }
