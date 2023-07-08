@@ -5,7 +5,7 @@ const { authMiddleware, isAdmin } = require('../../middlewares/authMiddleware');
 
 router.get('/brand/', getAllBrand);
 router.get('/brand/:id', getBrandById);
-router.post('/brand/', authMiddleware, isAdmin, createBrand);
+router.post('/brand/create', authMiddleware, isAdmin, createBrand);
 router.put('/brand/:id', authMiddleware, isAdmin, updateBrand);
 router.delete('/brand/:id', authMiddleware, isAdmin, deleteBrand);
 
