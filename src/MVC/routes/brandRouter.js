@@ -7,6 +7,6 @@ router.get('/brand/', getAllBrand);
 router.get('/brand/:id', getBrandById);
 router.post('/brand/create', authMiddleware, isAdmin, createBrand);
 router.put('/brand/update/:id', authMiddleware, isAdmin, updateBrand);
-router.delete('/brand/:id', authMiddleware, isAdmin, deleteBrand);
+router.delete('/brand/delete/:id', authMiddleware, isAdmin, deleteBrand);
 
 module.exports = router;
