@@ -10,7 +10,7 @@ const uploadImages = asyncHandler(async (req, res) => {
   try {
     const uploader = (path) => cloudinaryUploadImg(path, "images");
     const files = req.files;
-    //if (!files) throw new Error(error.message);
+    if (!files) throw new Error(error.message);
     const urls = [];
     for (const file of files) {
       const { path } = file;
@@ -21,8 +21,10 @@ const uploadImages = asyncHandler(async (req, res) => {
     const images = urls.map((file) => {
       return file;
     });
+
     res.status(200).send({ message: "Uploaded Images", data: images });
   } catch (error) {
+    // res.status(400).send({ message: error.message });
     throw new Error(error);
   }
 });

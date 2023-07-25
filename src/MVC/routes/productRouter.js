@@ -14,7 +14,7 @@ const {
 
 router.get("/product", getAllProducts);
 
-router.post("/product", authMiddleware, isAdmin, createProduct);
+router.post("/product/create", authMiddleware, isAdmin, createProduct);
 router.put("/product/rating", authMiddleware, ratingProduct);
 
 router.get("/product/:id", getProductById);

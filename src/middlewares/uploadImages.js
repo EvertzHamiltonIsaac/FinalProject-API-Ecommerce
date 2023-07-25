@@ -3,9 +3,11 @@ const sharp = require("sharp");
 const path = require("path");
 const fs = require("fs");
 //path.join(__dirname, "./src/public/images/")
-const storage = multer.diskStorage({
+
+const multerStorage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, path.join(__dirname, "../public/images/"));
+    // console.log(path.join(__dirname, "../../public/images"));
+    cb(null, path.join(__dirname, "../utils"));
   },
   filename: function (req, file, cb) {
     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
@@ -14,7 +16,7 @@ const storage = multer.diskStorage({
 });
 
 const multerFilter = (req, file, cb) => {
-  if (file.mimetype.startsWith("Images")) {
+  if (file.mimetype.startsWith("image")) {
     cb(null, true);
   } else {
     cb({ message: "Unsopported file format" }, false);
@@ -22,7 +24,7 @@ const multerFilter = (req, file, cb) => {
 };
 
 const uploadPhoto = multer({
-  storage: storage,
+  storage: multerStorage,
   filefilter: multerFilter,
   limits: { fieldSize: 2000000 },
 });
@@ -38,7 +40,7 @@ const productImgResize = async (req, res, next) => {
         .toFormat("jpeg")
         .jpeg({ quality: 90 })
         .toFile(
-          path.join(__dirname, `../public/images/products/${file.filename}`)
+          path.join(__dirname, `../../public/images/products/${file.filename}`)
         );
       fs.unlinkSync(
         path.join(__dirname, `../public/images/products/${file.filename}`)
