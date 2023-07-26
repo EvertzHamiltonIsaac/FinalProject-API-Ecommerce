@@ -435,40 +435,17 @@ const saveAddress = asyncHandler(async (req, res) => {
 });
 
 const userCart = asyncHandler(async (req, res) => {
-  const { cart } = req.body;
+  const { productId, color, quantity, price } = req.body;
   const { _id } = req.user;
   validateMongoId(_id);
 
   try {
-    let products = [];
-
-    const user = await User.findById(_id);
-
-    const alreadyExistCart = await Cart.findOne({ orderby: user?._id });
-    console.log(alreadyExistCart);
-
-    if (alreadyExistCart) {
-      alreadyExistCart.remove();
-    }
-
-    for (let i = 0; i < cart.length; i++) {
-      let object = {};
-      object.product = cart[i]._id;
-      object.count = cart[i].count;
-      object.color = cart[i].color;
-      let getPrice = await Product.findById(cart[i]._id).select("price").exec();
-      object.price = getPrice.price;
-      products.push(object);
-    }
-    let cartTotal = 0;
-    for (let i = 0; i < products.length; i++) {
-      cartTotal += products[i].price * products[i].count;
-    }
-
     let newCart = await new Cart({
-      products,
-      cartTotal,
-      orderBy: user?._id,
+      userId: _id,
+      productId,
+      color,
+      price,
+      quantity,
     }).save();
 
     res.status(202).send({ message: "Created New Cart", data: newCart });
@@ -481,10 +458,9 @@ const getUserCart = asyncHandler(async (req, res) => {
   const { _id } = req.user;
   validateMongoId(_id);
   try {
-    const cart = await Cart.findOne({ orderBy: _id }).populate(
-      "products.product",
-      "_id title price totalAfterDiscount"
-    );
+    const cart = await Cart.find({ userId: _id })
+      .populate("productId", "_id title price totalAfterDiscount")
+      .populate("color");
     res.status(200).send({ message: "User Cart Founded ", data: cart });
   } catch (error) {
     throw new Error(error);
@@ -603,9 +579,10 @@ const getAllOrders = asyncHandler(async (req, res) => {
       .populate("products.product")
       .populate("orderBy")
       .exec();
-    res
-      .status(200)
-      .send({ message: "All Orders Founded Successfully", data: AllUserOrders });
+    res.status(200).send({
+      message: "All Orders Founded Successfully",
+      data: AllUserOrders,
+    });
   } catch (error) {
     throw new Error(error);
   }
