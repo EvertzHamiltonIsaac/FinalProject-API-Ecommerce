@@ -38,6 +38,7 @@ const productSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+
     images: [
       {
         public_id: String,

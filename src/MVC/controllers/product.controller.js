@@ -66,9 +66,9 @@ const getAllProducts = asyncHandler(async (req, res) => {
       const productCount = await Product.countDocuments();
       if (skip >= productCount) throw new Error("This Page Does not Exists.");
     }
-    console.log(page, limit, skip);
+    // console.log(page, limit, skip);
 
-    const product = await query;
+    const product = await query.populate('color');
     res.status(200).send({ message: "All Product Founded", data: product });
   } catch (error) {
     res.status(404).send({ status: 404, message: error.message });
