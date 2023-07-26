@@ -22,7 +22,7 @@ const getProductById = asyncHandler(async (req, res) => {
   const { id } = req.params;
   validateMongoDbId(id);
   try {
-    const findProduct = await Product.findById(id);
+    const findProduct = await Product.findById(id).populate("color");
     res.status(200).send({ message: "Product Founded", data: findProduct });
   } catch (error) {
     res.status(404).send({ status: 404, message: error.message });
