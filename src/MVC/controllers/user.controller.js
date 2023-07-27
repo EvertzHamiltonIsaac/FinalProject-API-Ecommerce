@@ -460,9 +460,8 @@ const getUserCart = asyncHandler(async (req, res) => {
   validateMongoId(_id);
   try {
     const cart = await Cart.find({ userId: _id })
-      .populate("productId", "_id title price totalAfterDiscount")
-      .populate("color")
-      .populate("brand");
+      .populate("productId", "_id title price brand images totalAfterDiscount")
+      .populate("color");
     res.status(200).send({ message: "User Cart Founded ", data: cart });
   } catch (error) {
     throw new Error(error);
@@ -713,7 +712,7 @@ module.exports = {
   saveAddress,
   userCart,
   getUserCart,
-  createOrder
+  createOrder,
   // emptyCart,
   // applyCoupon,
   // createOrder,
