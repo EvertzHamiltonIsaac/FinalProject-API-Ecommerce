@@ -22,13 +22,14 @@ const {
   saveAddress,
   userCart,
   getUserCart,
-  emptyCart,
-  applyCoupon,
+  // emptyCart,
+  // applyCoupon,
   createOrder,
   addToWishList,
-  getOrders,
-  getAllOrders,
-  updateOrderStatus
+  // getOrders,
+  // getAllOrders,
+  // updateOrderStatus,
+  // getMonthWiseOrderIncome
 } = require("../controllers/user.controller");
 
 
@@ -54,17 +55,21 @@ router.get('/user/wishlist', authMiddleware, getWishList);
 router.get('/user/', authMiddleware, getWishList);
 router.get("/user/cart", authMiddleware, getUserCart);
 router.post("/user/cart", authMiddleware, userCart);
-router.post("/user/applyCoupon",authMiddleware, applyCoupon);
-router.post("/user/cart/cash-order",authMiddleware, createOrder);
-router.get("/user/cart/get-orders",authMiddleware, getOrders);
-router.get("/user/cart/get-all-orders",authMiddleware, getAllOrders);
+// router.post("/user/applyCoupon",authMiddleware, applyCoupon);
+router.post("/user/cart/create-order",authMiddleware, createOrder);
+// router.get("/user/cart/get-orders",authMiddleware, getOrders);
+// router.get("/user/cart/get-all-orders",authMiddleware, getAllOrders);
+
+
+// router.get("/order/get-month-wise-order", authMiddleware,isAdmin, getMonthWiseOrderIncome);
+
 
 router.get("/user/:id", authMiddleware, isAdmin, getUser);
 router.put("/user/updateUser", authMiddleware, isAdmin, updateUser);
-router.delete("/user/emptyCart/", authMiddleware, emptyCart);
+// router.delete("/user/emptyCart/", authMiddleware, emptyCart);
 router.put("/user/blockUser/:id", authMiddleware, isAdmin, blockUser);
 router.put("/user/unblockUser/:id", authMiddleware, isAdmin, unblockUser);
-router.put("/user/updateOrder/:id",authMiddleware, isAdmin ,updateOrderStatus);
+// router.put("/user/updateOrder/:id",authMiddleware, isAdmin ,updateOrderStatus);
 router.delete("/user/deleteUser/:id", deleteUser);
 
 router.put("/user/updatePassword", authMiddleware, updatePassword);
