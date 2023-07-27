@@ -1,6 +1,6 @@
 const RazorPay = require("razorpay");
 // const instance = new RazorPay({ key_id: "", key_secret: "" });
-const intance = {} //! Codigo Temporal.
+const instance = { key_id: "", key_secret: ""} //! Codigo Temporal.
 
 const checkout = async (req, res) => {
   const option = {
