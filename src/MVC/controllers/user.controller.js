@@ -435,7 +435,7 @@ const saveAddress = asyncHandler(async (req, res) => {
 });
 
 const userCart = asyncHandler(async (req, res) => {
-  const { productId, color, quantity, price } = req.body;
+  const { productId, color, brand, quantity, price } = req.body;
   const { _id } = req.user;
   validateMongoId(_id);
 
@@ -443,6 +443,7 @@ const userCart = asyncHandler(async (req, res) => {
     let newCart = await new Cart({
       userId: _id,
       productId,
+      brand,
       color,
       price,
       quantity,
@@ -460,7 +461,8 @@ const getUserCart = asyncHandler(async (req, res) => {
   try {
     const cart = await Cart.find({ userId: _id })
       .populate("productId", "_id title price totalAfterDiscount")
-      .populate("color");
+      .populate("color")
+      .populate("brand");
     res.status(200).send({ message: "User Cart Founded ", data: cart });
   } catch (error) {
     throw new Error(error);
