@@ -54,7 +54,7 @@ router.put("/wishlist", authMiddleware, addToWishList);
 router.get('/user/wishlist', authMiddleware, getWishList);
 router.get('/user/', authMiddleware, getWishList);
 router.get("/user/cart", authMiddleware, getUserCart);
-router.post("/user/cart", authMiddleware, userCart);
+router.post("/user/create-cart", authMiddleware, userCart);
 // router.post("/user/applyCoupon",authMiddleware, applyCoupon);
 router.post("/user/cart/create-order",authMiddleware, createOrder);
 // router.get("/user/cart/get-orders",authMiddleware, getOrders);
