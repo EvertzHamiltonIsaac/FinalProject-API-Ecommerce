@@ -18,7 +18,7 @@ const cartSchema = new mongoose.Schema(
       },
     ],
     brand: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: mongoose.Schema.Types.String,
       ref: "Brand",
     },
     price: {
