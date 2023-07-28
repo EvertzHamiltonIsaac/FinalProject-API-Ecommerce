@@ -30,11 +30,9 @@ const {
   // getAllOrders,
   // updateOrderStatus,
   getMonthWiseOrderIncome,
-  getMonthWiseOrderCount
+  getMonthWiseOrderCount,
+  removeProductFromCart,
 } = require("../controllers/user.controller");
-
-
-
 
 // TODO: Auth
 router.post("/auth/register", registerUser);
@@ -52,23 +50,30 @@ router.post("/auth/login/admin", loginAdmin);
 router.get("/user/", getAllUsers);
 
 router.put("/wishlist", authMiddleware, addToWishList);
-router.get('/user/wishlist', authMiddleware, getWishList);
-router.get('/user/', authMiddleware, getWishList);
+router.get("/user/wishlist", authMiddleware, getWishList);
+router.get("/user/", authMiddleware, getWishList);
 router.get("/user/cart", authMiddleware, getUserCart);
 router.post("/user/create-cart", authMiddleware, userCart);
 // router.post("/user/applyCoupon",authMiddleware, applyCoupon);
-router.post("/user/cart/create-order",authMiddleware, createOrder);
+router.post("/user/cart/create-order", authMiddleware, createOrder);
 // router.get("/user/cart/get-orders",authMiddleware, getOrders);
 // router.get("/user/cart/get-all-orders",authMiddleware, getAllOrders);
 
-
-router.get("/order/get-month-wise-order-income", authMiddleware, getMonthWiseOrderIncome);
-router.get("/order/get-month-wise-order-count", authMiddleware, getMonthWiseOrderCount);
-
+router.get(
+  "/order/get-month-wise-order-income",
+  authMiddleware,
+  getMonthWiseOrderIncome
+);
+router.get(
+  "/order/get-month-wise-order-count",
+  authMiddleware,
+  getMonthWiseOrderCount
+);
 
 router.get("/user/:id", authMiddleware, isAdmin, getUser);
 router.put("/user/updateUser", authMiddleware, isAdmin, updateUser);
 // router.delete("/user/emptyCart/", authMiddleware, emptyCart);
+router.delete("/user/deleteFromCart/", authMiddleware, removeProductFromCart);
 router.put("/user/blockUser/:id", authMiddleware, isAdmin, blockUser);
 router.put("/user/unblockUser/:id", authMiddleware, isAdmin, unblockUser);
 // router.put("/user/updateOrder/:id",authMiddleware, isAdmin ,updateOrderStatus);
@@ -78,6 +83,5 @@ router.put("/user/updatePassword", authMiddleware, updatePassword);
 router.put("/user/updateAddress", authMiddleware, saveAddress);
 
 router.put("/user/resetPassword/:token", resetPassword);
-
 
 module.exports = router;

@@ -468,6 +468,20 @@ const getUserCart = asyncHandler(async (req, res) => {
   }
 });
 
+const removeProductFromCart = asyncHandler(async (req, res) => {
+  const { _id } = req.user;
+  const { cartItemId } = req.body;
+  validateMongoId(_id);
+  try {
+    const deleteProductFromCart = await Cart.deleteOne({
+      userId: _id,
+      _id: cartItemId,
+    });
+    res.status(200).send({ deleteProductFromCart });
+  } catch (error) {
+    throw new Error(error);
+  }
+});
 const createOrder = asyncHandler(async (req, res) => {
   const {
     shippingInfo,
@@ -692,7 +706,7 @@ const getMonthWiseOrderIncome = asyncHandler(async (req, res) => {
   console.log(endDate);
 });
 
-const getMonthWiseOrderCount= asyncHandler(async (req, res) => {
+const getMonthWiseOrderCount = asyncHandler(async (req, res) => {
   const months = [
     "January",
     "February",
@@ -824,5 +838,6 @@ module.exports = {
   // getAllOrders,
   // updateOrderStatus,
   getMonthWiseOrderIncome,
-  getMonthWiseOrderCount
+  getMonthWiseOrderCount,
+  removeProductFromCart,
 };
