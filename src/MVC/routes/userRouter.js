@@ -29,7 +29,8 @@ const {
   // getOrders,
   // getAllOrders,
   // updateOrderStatus,
-  // getMonthWiseOrderIncome
+  getMonthWiseOrderIncome,
+  getMonthWiseOrderCount
 } = require("../controllers/user.controller");
 
 
@@ -61,7 +62,8 @@ router.post("/user/cart/create-order",authMiddleware, createOrder);
 // router.get("/user/cart/get-all-orders",authMiddleware, getAllOrders);
 
 
-// router.get("/order/get-month-wise-order", authMiddleware,isAdmin, getMonthWiseOrderIncome);
+router.get("/order/get-month-wise-order-income", authMiddleware, getMonthWiseOrderIncome);
+router.get("/order/get-month-wise-order-count", authMiddleware, getMonthWiseOrderCount);
 
 
 router.get("/user/:id", authMiddleware, isAdmin, getUser);

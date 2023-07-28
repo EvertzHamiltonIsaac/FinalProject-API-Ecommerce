@@ -639,58 +639,111 @@ const createOrder = asyncHandler(async (req, res) => {
 //   }
 // });
 
-// const getMonthWiseOrderIncome = asyncHandler(async (req, res) => {
-//   const months = [
-//     "January",
-//     "February",
-//     "March",
-//     "April",
-//     "May",
-//     "June",
-//     "July",
-//     "August",
-//     "September",
-//     "October",
-//     "November",
-//     "December",
-//   ];
+const getMonthWiseOrderIncome = asyncHandler(async (req, res) => {
+  const monthsName = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
 
-//   let date = new Date();
-//   let endDate = "";
-//   date.setDate(1);
+  let date = new Date();
+  let endDate = "";
+  date.setDate(1);
 
-//   for (let index = 0; index < 11; index++) {
-//     date.setMonth(date.getMonth() - 1);
-//     endDate = months[date.getMonth()] + " " + date.getFullYear();
-//   }
+  for (let index = 0; index < 11; index++) {
+    date.setMonth(date.getMonth() - 1);
+    endDate = monthsName[date.getMonth()] + " " + date.getFullYear();
+  }
 
-//   try {
-//     const data = await Order.aggregate([
-//       {
-//         $match: {
-//           createdAt: {
-//             $lte: new Date(),
-//             $gte: new Date(endDate),
-//           },
-//         },
-//       },
-//       {
-//         $group: {
-//           _id: {
-//             month: "$month",
-//           },
-//           amount: { $sum: "$totalPriceAfterDiscount" },
-//         },
-//       },
-//     ]);
-//     res.status(200).send(data);
-//   } catch (error) {
-//     res.status(400).send({ message: error.message });
-//     throw new Error(error);
-//   }
+  try {
+    const data = await Order.aggregate([
+      {
+        $match: {
+          createdAt: {
+            $lte: new Date(),
+            $gte: new Date(endDate),
+          },
+        },
+      },
+      {
+        $group: {
+          _id: {
+            month: "$month",
+          },
+          amount: { $sum: "$totalPriceAfterDiscount" },
+        },
+      },
+    ]);
+    res.status(200).send(data);
+  } catch (error) {
+    res.status(400).send({ message: error.message });
+    throw new Error(error);
+  }
 
-//   console.log(endDate);
-// });
+  console.log(endDate);
+});
+
+const getMonthWiseOrderCount= asyncHandler(async (req, res) => {
+  const months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+
+  let date = new Date();
+  let endDate = "";
+  date.setDate(1);
+
+  for (let index = 0; index < 11; index++) {
+    date.setMonth(date.getMonth() - 1);
+    endDate = months[date.getMonth()] + " " + date.getFullYear();
+  }
+
+  try {
+    const data = await Order.aggregate([
+      {
+        $match: {
+          createdAt: {
+            $lte: new Date(),
+            $gte: new Date(endDate),
+          },
+        },
+      },
+      {
+        $group: {
+          _id: {
+            month: "$month",
+          },
+          count: { $sum: 1 },
+        },
+      },
+    ]);
+    res.status(200).send(data);
+  } catch (error) {
+    res.status(400).send({ message: error.message });
+    throw new Error(error);
+  }
+
+  console.log(endDate);
+});
 
 module.exports = {
   registerUser,
@@ -719,5 +772,6 @@ module.exports = {
   // getOrders,
   // getAllOrders,
   // updateOrderStatus,
-  // getMonthWiseOrderIncome,
+  getMonthWiseOrderIncome,
+  getMonthWiseOrderCount
 };
