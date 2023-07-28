@@ -683,7 +683,7 @@ const getMonthWiseOrderIncome = asyncHandler(async (req, res) => {
         },
       },
     ]);
-    res.status(200).send(data);
+    res.status(200).send({success: true, data: data});
   } catch (error) {
     res.status(400).send({ message: error.message });
     throw new Error(error);
@@ -736,7 +736,7 @@ const getMonthWiseOrderCount= asyncHandler(async (req, res) => {
         },
       },
     ]);
-    res.status(200).send(data);
+    res.status(200).send({success: true, data: data});
   } catch (error) {
     res.status(400).send({ message: error.message });
     throw new Error(error);
@@ -783,11 +783,12 @@ const getYearlyTotalOrders = asyncHandler(async (req, res) => {
       {
         $group: {
           _id: null,
-          count: { $sum: "" },
+          count: { $sum: 1 },
+          amount: {$sum: "$totalPriceAfterDiscount"}
         },
       },
     ]);
-    res.status(200).send(data);
+    res.status(200).send({success: true, data: data});
   } catch (error) {
     res.status(400).send({ message: error.message });
     throw new Error(error);
@@ -824,5 +825,6 @@ module.exports = {
   // getAllOrders,
   // updateOrderStatus,
   getMonthWiseOrderIncome,
-  getMonthWiseOrderCount
+  getMonthWiseOrderCount,
+  getYearlyTotalOrders
 };
