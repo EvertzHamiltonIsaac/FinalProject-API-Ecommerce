@@ -34,6 +34,7 @@ const {
   getYearlyTotalOrders,
   removeProductFromCart,
   updateProductQuantityFromCart,
+  updateProductQuantityFromCart2
 } = require("../controllers/user.controller");
 
 // TODO: Auth
@@ -86,10 +87,16 @@ router.delete(
 );
 
 router.put(
-  "/user/updateFromCart/:cartItemId/:newQuantity",
+  "/user/updateFromCart/:cartItemId",
   authMiddleware,
   updateProductQuantityFromCart
 );
+
+// router.put(
+//   "/user/updateFromCart/:cartItemId",
+//   authMiddleware,
+//   updateProductQuantityFromCart2
+// );
 
 router.put("/user/blockUser/:id", authMiddleware, isAdmin, blockUser);
 router.put("/user/unblockUser/:id", authMiddleware, isAdmin, unblockUser);

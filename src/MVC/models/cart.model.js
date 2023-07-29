@@ -11,12 +11,12 @@ const cartSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Product",
     },
-    images: [
-      {
-        public_id: String,
-        url: String,
-      },
-    ],
+    // images: [
+    //   {
+    //     public_id: String,
+    //     url: String,
+    //   },
+    // ],
     brand: {
       type: mongoose.Schema.Types.String,
       ref: "Brand",
