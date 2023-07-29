@@ -482,6 +482,21 @@ const removeProductFromCart = asyncHandler(async (req, res) => {
     throw new Error(error);
   }
 });
+
+const updateProductQuantityFromCart = asyncHandler(async (req, res) => {
+  const { _id } = req.user;
+  const { cartItemId, newQuantity } = req.params;
+  validateMongoId(_id);
+  try {
+    const cartItem = await Cart.findOne({ userId: _id, _id: cartItemId });
+    cartItem.quantity = newQuantity;
+    cartItem.save();
+    res.status(200).send({ deleteProductFromCart });
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
 const createOrder = asyncHandler(async (req, res) => {
   const {
     shippingInfo,
@@ -843,4 +858,5 @@ module.exports = {
   // getMonthWiseOrderCount,
   getYearlyTotalOrders,
   removeProductFromCart,
+  updateProductQuantityFromCart,
 };
