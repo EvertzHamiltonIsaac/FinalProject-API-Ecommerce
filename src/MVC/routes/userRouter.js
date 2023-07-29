@@ -83,7 +83,7 @@ router.delete(
   authMiddleware,
   removeProductFromCart
 );
-router.put(
+router.delete(
   "/user/updateFromCart/:cartItemId/:newQuantity",
   authMiddleware,
   updateProductQuantityFromCart
