@@ -491,7 +491,7 @@ const updateProductQuantityFromCart = asyncHandler(async (req, res) => {
     const cartItem = await Cart.findOne({ userId: _id, _id: cartItemId });
     cartItem.quantity = newQuantity;
     cartItem.save();
-    res.status(200).send({ updateProductQuantityFromCart });
+    res.status(200).send({ cartItem });
   } catch (error) {
     throw new Error(error);
   }
