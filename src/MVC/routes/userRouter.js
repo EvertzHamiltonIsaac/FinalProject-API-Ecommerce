@@ -78,16 +78,19 @@ router.get(
 router.get("/user/:id", authMiddleware, isAdmin, getUser);
 router.put("/user/updateUser", authMiddleware, isAdmin, updateUser);
 // router.delete("/user/emptyCart/", authMiddleware, emptyCart);
+
 router.delete(
   "/user/deleteFromCart/:cartItemId",
   authMiddleware,
   removeProductFromCart
 );
-router.delete(
+
+router.put(
   "/user/updateFromCart/:cartItemId/:newQuantity",
   authMiddleware,
   updateProductQuantityFromCart
 );
+
 router.put("/user/blockUser/:id", authMiddleware, isAdmin, blockUser);
 router.put("/user/unblockUser/:id", authMiddleware, isAdmin, unblockUser);
 // router.put("/user/updateOrder/:id",authMiddleware, isAdmin ,updateOrderStatus);
