@@ -27,7 +27,7 @@ const {
   createOrder,
   addToWishList,
   // getOrders,
-  // getAllOrders,
+  getAllOrders,
   // updateOrderStatus,
   getMonthWiseOrderIncome,
   // getMonthWiseOrderCount,
@@ -60,7 +60,7 @@ router.post("/user/create-cart", authMiddleware, userCart);
 // router.post("/user/applyCoupon",authMiddleware, applyCoupon);
 router.post("/user/cart/create-order", authMiddleware, createOrder);
 // router.get("/user/cart/get-orders",authMiddleware, getOrders);
-// router.get("/user/cart/get-all-orders",authMiddleware, getAllOrders);
+router.get("/order/get-all-orders",authMiddleware, isAdmin, getAllOrders);
 
 router.get(
   "/order/get-month-wise-order-income",

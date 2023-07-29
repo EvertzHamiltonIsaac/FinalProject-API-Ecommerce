@@ -468,6 +468,8 @@ const getUserCart = asyncHandler(async (req, res) => {
   }
 });
 
+
+
 const removeProductFromCart = asyncHandler(async (req, res) => {
   const { _id } = req.user;
   const { cartItemId } = req.params;
@@ -651,20 +653,20 @@ const createOrder = asyncHandler(async (req, res) => {
 //   }
 // });
 
-// const getAllOrders = asyncHandler(async (req, res) => {
-//   try {
-//     const AllUserOrders = await Order.find()
-//       .populate("products.product")
-//       .populate("orderBy")
-//       .exec();
-//     res.status(200).send({
-//       message: "All Orders Founded Successfully",
-//       data: AllUserOrders,
-//     });
-//   } catch (error) {
-//     throw new Error(error);
-//   }
-// });
+const getAllOrders = asyncHandler(async (req, res) => {
+  try {
+    const AllUserOrders = await Order.find()
+      .populate("user")
+      .populate("orderItems.product")
+      .exec();
+    res.status(200).send({
+      message: "All Orders Founded Successfully",
+      data: AllUserOrders,
+    });
+  } catch (error) {
+    throw new Error(error);
+  }
+});
 
 // const updateOrderStatus = asyncHandler(async (req, res) => {
 //   const { status } = req.body;
@@ -873,7 +875,7 @@ module.exports = {
   // applyCoupon,
   // createOrder,
   // getOrders,
-  // getAllOrders,
+  getAllOrders,
   // updateOrderStatus,
   getMonthWiseOrderIncome,
   // getMonthWiseOrderCount,
