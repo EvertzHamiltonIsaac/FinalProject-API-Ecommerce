@@ -34,7 +34,7 @@ const {
   getYearlyTotalOrders,
   removeProductFromCart,
   updateProductQuantityFromCart,
-  updateProductQuantityFromCart2
+  getOrderById
 } = require("../controllers/user.controller");
 
 // TODO: Auth
@@ -74,6 +74,13 @@ router.get(
   authMiddleware,
   isAdmin,
   getYearlyTotalOrders
+);
+
+router.get(
+  "/order/:id",
+  authMiddleware,
+  isAdmin,
+  getOrderById
 );
 
 router.get("/user/:id", authMiddleware, isAdmin, getUser);

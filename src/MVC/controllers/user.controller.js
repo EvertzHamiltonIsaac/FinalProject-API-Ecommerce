@@ -468,8 +468,6 @@ const getUserCart = asyncHandler(async (req, res) => {
   }
 });
 
-
-
 const removeProductFromCart = asyncHandler(async (req, res) => {
   const { _id } = req.user;
   const { cartItemId } = req.params;
@@ -500,21 +498,22 @@ const removeProductFromCart = asyncHandler(async (req, res) => {
 // });
 
 const updateProductQuantityFromCart = asyncHandler(async (req, res) => {
-
   const { _id } = req.user;
   const { cartItemId } = req.params;
-  const {newQuantity} = req.body;
+  const { newQuantity } = req.body;
 
   validateMongoId(_id);
   validateMongoId(cartItemId);
 
-  try {    
-    const cartItem = await Cart.findOne({userId: _id, _id: cartItemId});
-    if(cartItem){
+  try {
+    const cartItem = await Cart.findOne({ userId: _id, _id: cartItemId });
+    if (cartItem) {
       cartItem.quantity = newQuantity;
       cartItem.save();
     }
-    res.status(200).send({message: 'Quantity Updated', success: true,  data: cartItem });
+    res
+      .status(200)
+      .send({ message: "Quantity Updated", success: true, data: cartItem });
   } catch (error) {
     throw new Error(error);
   }
@@ -547,6 +546,7 @@ const createOrder = asyncHandler(async (req, res) => {
     throw new Error(error);
   }
 });
+
 // const emptyCart = asyncHandler(async (req, res) => {
 //   const { _id } = req.user;
 //   validateMongoId(_id);
@@ -637,21 +637,22 @@ const createOrder = asyncHandler(async (req, res) => {
 //   }
 // });
 
-// const getOrders = asyncHandler(async (req, res) => {
-//   const { _id } = req.user;
-//   validateMongoId(_id);
+const getOrderById = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  validateMongoId(id);
 
-//   try {
-//     const userOrders = await Order.findOne({ orderBy: _id })
-//       .populate("products.product")
-//       .exec();
-//     res
-//       .status(200)
-//       .send({ message: "Order Founded Successfully", data: userOrders });
-//   } catch (error) {
-//     throw new Error(error);
-//   }
-// });
+  try {
+    const order = await Order.findById(id)
+      .populate("user")
+      .populate("orderItems.product")
+      .exec();
+    res
+      .status(200)
+      .send({ message: "Order Founded Successfully", data: order });
+  } catch (error) {
+    throw new Error(error);
+  }
+});
 
 const getAllOrders = asyncHandler(async (req, res) => {
   try {
@@ -882,5 +883,6 @@ module.exports = {
   getYearlyTotalOrders,
   removeProductFromCart,
   updateProductQuantityFromCart,
+  getOrderById
   // updateProductQuantityFromCart2
 };
