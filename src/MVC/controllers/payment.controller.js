@@ -18,7 +18,7 @@ const checkout = async (req, res) => {
   try {
     const paymentsApi = squareClient.paymentsApi;
     const createPaymentRequest = {
-      sourceId: sourceId, // frontend mediante el SDK de Square
+      sourceId: req.body.sourceId, 
       amountMoney: {
         amount: totalPrice * 100, 
         currency: 'USD', 
