@@ -645,6 +645,7 @@ const getOrderById = asyncHandler(async (req, res) => {
     const order = await Order.findById(id)
       .populate("user")
       .populate("orderItems.product")
+      .populate("orderItems.color")
       .exec();
     res
       .status(200)
