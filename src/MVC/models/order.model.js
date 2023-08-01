@@ -39,11 +39,63 @@ const orderSchema = new mongoose.Schema(
       },
     },
     paymentInfo: {
-      razorpayOrderId: {
+      paymentId: {
         type: String,
         required: true,
       },
-      razorpayPaymentId: {
+      amountMoney: {
+        amount: {
+          type: Number,
+          required: true,
+        },
+        currency: {
+          type: String,
+          required: true,
+        },
+      },
+      paymentStatus: {
+        type: String,
+        required: true,
+      },
+      cardDetails: {
+        cardDetailsStatus: {
+          type: String,
+          required: true,
+        },
+        card: {
+          cardBrand: {
+            type: String,
+            required: true,
+          },
+          expMonth: {
+            type: Number,
+            required: true,
+          },
+          fingerprint: {
+            type: String,
+            required: true,
+          },
+          cardType: {
+            type: String,
+            required: true,
+          },
+          bin: {
+            type: String,
+            required: true,
+          },
+        },
+      },
+      cardPaymentTimeLine: {
+        authorizedAt: {
+          type: String,
+          required: true,
+        },
+        capturedAt: {
+          type: String,
+          required: true,
+        },
+      },
+      receiptNumber: {
         type: String,
         required: true,
       },
@@ -52,44 +104,44 @@ const orderSchema = new mongoose.Schema(
       {
         product: {
           type: mongoose.Schema.Types.ObjectId,
-          ref: 'Product',
-          required: true
+          ref: "Product",
+          required: true,
         },
         color: {
           type: mongoose.Schema.Types.ObjectId,
-          ref: 'Color',
-          required: true
+          ref: "Color",
+          required: true,
         },
         quantity: {
           type: Number,
-          required: true
+          required: true,
         },
         price: {
           type: Number,
-          required: true
-        }
-      }
+          required: true,
+        },
+      },
     ],
     paidAt: {
       type: Date,
-      default: Date.now()
+      default: Date.now(),
     },
-    month:{
+    month: {
       type: String,
-      default: new Date().getMonth()
+      default: new Date().getMonth(),
     },
     totalPrice: {
       type: Number,
-      required: true
+      required: true,
     },
     totalPriceAfterDiscount: {
       type: Number,
-      required: true
+      required: true,
     },
     orderStatus: {
       type: String,
-      default: "Ordered"
-    }
+      default: "Ordered",
+    },
   },
   { timestamps: true }
 );
