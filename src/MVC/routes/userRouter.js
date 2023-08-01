@@ -28,7 +28,7 @@ const {
   addToWishList,
   // getOrders,
   getAllOrders,
-  // updateOrderStatus,
+  updateOrderStatus,
   getMonthWiseOrderIncome,
   // getMonthWiseOrderCount,
   getYearlyTotalOrders,
