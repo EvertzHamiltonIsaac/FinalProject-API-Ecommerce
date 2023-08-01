@@ -670,28 +670,28 @@ const getAllOrders = asyncHandler(async (req, res) => {
   }
 });
 
-// const updateOrderStatus = asyncHandler(async (req, res) => {
-//   const { status } = req.body;
-//   const { id } = req.params;
-//   validateMongoId(id);
-//   try {
-//     const updateOrderStatus = await Order.findByIdAndUpdate(
-//       id,
-//       {
-//         orderStatus: status,
-//         paymentIntent: {
-//           status: status,
-//         },
-//       },
-//       { new: true }
-//     );
-//     res
-//       .status(200)
-//       .send({ message: "Order Updated Successfully", data: updateOrderStatus });
-//   } catch (error) {
-//     throw new Error(error);
-//   }
-// });
+const updateOrderStatus = asyncHandler(async (req, res) => {
+  const { status } = req.body;
+  const { id } = req.params;
+  validateMongoId(id);
+  try {
+    const updateOrderStatus = await Order.findByIdAndUpdate(
+      id,
+      {
+        orderStatus: status,
+        paymentIntent: {
+          status: status,
+        },
+      },
+      { new: true }
+    );
+    res
+      .status(200)
+      .send({ message: "Order Updated Successfully", data: updateOrderStatus });
+  } catch (error) {
+    throw new Error(error);
+  }
+});
 
 const getMonthWiseOrderIncome = asyncHandler(async (req, res) => {
   const monthsName = [
@@ -878,7 +878,7 @@ module.exports = {
   // createOrder,
   // getOrders,
   getAllOrders,
-  // updateOrderStatus,
+  updateOrderStatus,
   getMonthWiseOrderIncome,
   // getMonthWiseOrderCount,
   getYearlyTotalOrders,
