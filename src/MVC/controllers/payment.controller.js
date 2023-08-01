@@ -19,7 +19,7 @@ const checkout = async (req, res) => {
       });
     })
     .catch((error) => {
-      res.sendStatus(400);
+      res.status(400).send({message: 'error with fields'})
       throw new Error(error);
     });
 };
