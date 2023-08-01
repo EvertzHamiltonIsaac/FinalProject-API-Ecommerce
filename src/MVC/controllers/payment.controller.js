@@ -1,54 +1,35 @@
-// const RazorPay = require("razorpay");
-// // const instance = new RazorPay({ key_id: "", key_secret: "" });
-// const instance = { key_id: "", key_secret: ""} //! Codigo Temporal.
+const { Client, Environment, ApiError } = require("square");
+const JSONBig = require("json-bigint");
 
-
-const square = require('square');
-const { Client, Environment } = square;
-
-const accessToken = 'EAAAEBNM96rgPw1I_bzZE-YISf4VoCSlv3aU134fkxuxNKao5_UfVS4ag8kqEQLW';
-const squareClient = new Client({
-  environment: Environment.Sandbox, 
-  accessToken: accessToken,
+const client = new Client({
+  accessToken:
+    "EAAAEBNM96rgPw1I_bzZE-YISf4VoCSlv3aU134fkxuxNKao5_UfVS4ag8kqEQLW",
+  environment: Environment.Sandbox,
 });
 
 const checkout = async (req, res) => {
-
-  const { totalPrice } = req.body; 
-  try {
-    const paymentsApi = squareClient.paymentsApi;
-    const createPaymentRequest = {
-      sourceId: req.body.sourceId, 
-      amountMoney: {
-        amount: totalPrice * 100, 
-        currency: 'USD', 
-      },
-    };
-
-    const createPaymentResponse = await paymentsApi.createPayment(createPaymentRequest);
-    res.status(200).send({ success: true, payment: createPaymentResponse.result.payment });
-  } catch (error) {
-    res.status(500).send({ success: false, error: error.message });
-  }
-  
-  // const option = {
-  //   amount: 50000,
-  //   currency: "USD",
-  // };
-  // try {
-  //   const order = await instance.orders.create(option);
-  //   res.status(200).send({ success: true, order: order });
-  // } catch (error) {
-  //   throw new Error(error);
-  // }
+  client.paymentsApi
+    .createPayment(req.body)
+    .then((paymentInfo) => {
+      res.status(200).send({
+        message: "Pay Done Successfully",
+        paymentInformation: JSONBig.parse(
+          JSONBig.stringify(paymentInfo.result.payment)
+        ),
+      });
+    })
+    .catch((error) => {
+      res.sendStatus(400);
+      throw new Error(error);
+    });
 };
 
 const paymentVerification = async (req, res) => {
-  const { paymentId } = req.body; 
-  res.status(200).send({ success: true, paymentId: paymentId });
+  const { razorpayOrderId, razorpayPaymentId } = req.body;
+  res.status(200).send({ razorpayOrderId, razorpayPaymentId });
 };
 
 module.exports = {
-    checkout,
-    paymentVerification
-}
+  checkout,
+  paymentVerification,
+};
