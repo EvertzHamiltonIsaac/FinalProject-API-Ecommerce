@@ -655,6 +655,22 @@ const getOrderById = asyncHandler(async (req, res) => {
   }
 });
 
+const getUserOrders = asyncHandler(async () => {
+  const { _id } = req.user;
+
+  try {
+    const userOrders = await Order.find({user: _id})
+    .populate("user")
+    .populate("orderItems.product")
+    .populate("orderItems.color")
+    .exec();
+
+    res.status(200).send({message: 'User Order Founded', message: userOrders})
+  } catch (error) {
+    throw new Error(error)
+  }
+})
+
 const getAllOrders = asyncHandler(async (req, res) => {
   try {
     const AllUserOrders = await Order.find()
@@ -884,6 +900,7 @@ module.exports = {
   getYearlyTotalOrders,
   removeProductFromCart,
   updateProductQuantityFromCart,
-  getOrderById
+  getOrderById,
+  getUserOrders
   // updateProductQuantityFromCart2
 };

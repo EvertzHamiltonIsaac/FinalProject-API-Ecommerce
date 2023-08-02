@@ -22,6 +22,7 @@ const {
   saveAddress,
   userCart,
   getUserCart,
+  getUserOrders,
   // emptyCart,
   // applyCoupon,
   createOrder,
@@ -61,6 +62,8 @@ router.post("/user/create-cart", authMiddleware, userCart);
 router.post("/order/create-order", authMiddleware, createOrder);
 // router.get("/user/cart/get-orders",authMiddleware, getOrders);
 router.get("/order/get-all-orders",authMiddleware, isAdmin, getAllOrders);
+router.get("/order/get-my-orders",authMiddleware, getUserOrders);
+
 
 router.get(
   "/order/get-month-wise-order-income",
