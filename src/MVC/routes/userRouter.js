@@ -99,7 +99,8 @@ router.put("/order/updateOrder/:id",authMiddleware, isAdmin ,updateOrderStatus);
 
 router.get("/user/:id", authMiddleware, isAdmin, getUser);
 router.put("/user/updateUser", authMiddleware, isAdmin, updateUser);
-// router.delete("/user/emptyCart/", authMiddleware, emptyCart);
+
+// router.delete("/cart/emptyCart/", authMiddleware, emptyCart);
 
 router.delete(
   "/user/deleteFromCart/:cartItemId",

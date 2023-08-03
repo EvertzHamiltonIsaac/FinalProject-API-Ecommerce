@@ -183,23 +183,29 @@ const RefreshToken = asyncHandler(async (req, res) => {
 //* Forgot Password ⚠️
 const forgotPasswordToken = asyncHandler(async (req, res) => {
   const { email } = req.body;
+
   const user = await User.findOne({ email });
+
   if (!user) {
     res
       .status(404)
       .send({ status: 404, message: " Token Expired, Try again later" });
   }
+
   try {
     const token = await user.createPasswordResetToken();
     await user.save();
     const resetURL = `Hi, Please follow this link to reset your password. This link is valid till 10 minutes from now. < href='http://127.0.0.1:3000/api/v1/user/updatePassword/${token}'>Click Here</>`;
+
     const data = {
       to: email,
       text: "Hey User",
       subject: "Forgot Password Link",
-      htm: resetURL,
+      htm: <div>Hola</div>,
     };
+
     sendEmail(data);
+
     res.status(200).send({ message: "Token de Acceso Generado", data: token });
   } catch (error) {
     res.status(404).send({ status: 404, message: error.message });
@@ -519,6 +525,18 @@ const updateProductQuantityFromCart = asyncHandler(async (req, res) => {
   }
 });
 
+// const emptyCart = asyncHandler(async (req, res) => {
+//   const { _id } = req.user;
+
+//   try {
+//     const user = await User.findOne({ _id });
+
+//     res.status(200).send({ message: "Cart Empty Successfully", data: cart });
+//   } catch (error) {
+//     throw new Error(error);
+//   }
+// });
+
 const createOrder = asyncHandler(async (req, res) => {
   const {
     shippingInfo,
@@ -527,7 +545,9 @@ const createOrder = asyncHandler(async (req, res) => {
     totalPriceAfterDiscount,
     paymentInfo,
   } = req.body;
+
   const { _id } = req.user;
+  validateMongoId(_id);
 
   try {
     const order = await Order.create({
@@ -538,27 +558,30 @@ const createOrder = asyncHandler(async (req, res) => {
       paymentInfo,
       user: _id,
     });
-    res
-      .status(200)
-      .send({ message: "Order Created Succesfully.", data: order });
+
+    if (order) {
+      const cart = await Cart.findOneAndRemove({ userId: _id });
+      if (cart) {
+        res.status(200).send({
+          message: "Order Created Succesfully.",
+          data: order,
+          cartRemoved: cart,
+        });
+      } else{
+        res.status(400).send({
+          message: "Cart Not Deleted",
+        });
+      }
+    } else {
+      res.status(400).send({
+        message: "Error in create order",
+      });
+    }
   } catch (error) {
     // res.status(400).send({message: error})
     throw new Error(error);
   }
 });
-
-// const emptyCart = asyncHandler(async (req, res) => {
-//   const { _id } = req.user;
-//   validateMongoId(_id);
-//   try {
-//     const user = await User.findOne({ _id });
-//     const cart = await Cart.findOneAndRemove({ orderBy: _id });
-
-//     res.status(200).send({ message: "Cart Empty Successfully", data: cart });
-//   } catch (error) {
-//     throw new Error(error);
-//   }
-// });
 
 // const applyCoupon = asyncHandler(async (req, res) => {
 //   const { coupon } = req.body;
@@ -658,19 +681,19 @@ const getOrderById = asyncHandler(async (req, res) => {
 const getUserOrders = asyncHandler(async (req, res) => {
   const { _id } = req.user;
   validateMongoId(_id);
-  
-  try {
-    const userOrders = await Order.find({user: _id})
-    .populate("user")
-    .populate("orderItems.product")
-    .populate("orderItems.color")
-    .exec();
 
-    res.status(200).send({message: 'User Order Founded', data: userOrders})
+  try {
+    const userOrders = await Order.find({ user: _id })
+      .populate("user")
+      .populate("orderItems.product")
+      .populate("orderItems.color")
+      .exec();
+
+    res.status(200).send({ message: "User Order Founded", data: userOrders });
   } catch (error) {
-    throw new Error(error)
+    throw new Error(error);
   }
-})
+});
 
 const getAllOrders = asyncHandler(async (req, res) => {
   try {
@@ -816,6 +839,7 @@ const getMonthWiseOrderIncome = asyncHandler(async (req, res) => {
 
 //   console.log(endDate);
 // });
+
 const getRecentOrders = asyncHandler(async (req, res) => {
   const { limit } = req.params;
   try {
@@ -834,8 +858,8 @@ const getRecentOrders = asyncHandler(async (req, res) => {
       res.status(400).send({
         message: `field 'limit' undefined`,
         example: {
-          limit: 10
-        }
+          limit: 10,
+        },
       });
     }
   } catch (error) {
@@ -929,6 +953,6 @@ module.exports = {
   removeProductFromCart,
   updateProductQuantityFromCart,
   getOrderById,
-  getUserOrders
+  getUserOrders,
   // updateProductQuantityFromCart2
 };
