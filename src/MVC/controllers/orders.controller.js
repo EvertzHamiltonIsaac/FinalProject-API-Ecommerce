@@ -60,6 +60,22 @@ const getAllOrders = asyncHandler(async (req, res) => {
   }
 });
 
+const getRecentOrders = asyncHandler(async (req, res) => {
+  const {limit} = req.body;
+  try {
+    const recentOrders = await Order.find().sort({_id: -1}).limit(limit)
+      .populate("user")
+      .populate("orderItems.product")
+      .exec();
+    res.status(200).send({
+      message: `${limit} Orders Founded`,
+      data: recentOrders,
+    });
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
 const getMonthWiseOrderIncome = asyncHandler(async (req, res) => {
   const monthsName = [
     "January",
@@ -113,6 +129,7 @@ const getMonthWiseOrderIncome = asyncHandler(async (req, res) => {
 
   console.log(endDate);
 });
+
 
 // const getMonthWiseOrderCount= asyncHandler(async (req, res) => {
 //   const months = [
@@ -218,3 +235,7 @@ const getYearlyTotalOrders = asyncHandler(async (req, res) => {
 
   console.log(endDate);
 });
+
+module.exports = {
+  getRecentOrders
+}

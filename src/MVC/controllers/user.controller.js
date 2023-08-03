@@ -665,7 +665,7 @@ const getUserOrders = asyncHandler(async (req, res) => {
     .populate("orderItems.color")
     .exec();
 
-    res.status(200).send({message: 'User Order Founded', message: userOrders})
+    res.status(200).send({message: 'User Order Founded', data: userOrders})
   } catch (error) {
     throw new Error(error)
   }
