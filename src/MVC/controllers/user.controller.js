@@ -657,7 +657,8 @@ const getOrderById = asyncHandler(async (req, res) => {
 
 const getUserOrders = asyncHandler(async (req, res) => {
   const { _id } = req.user;
-
+  validateMongoId(_id);
+  
   try {
     const userOrders = await Order.find({user: _id})
     .populate("user")
@@ -815,6 +816,32 @@ const getMonthWiseOrderIncome = asyncHandler(async (req, res) => {
 
 //   console.log(endDate);
 // });
+const getRecentOrders = asyncHandler(async (req, res) => {
+  const { limit } = req.body;
+  try {
+    if (limit) {
+      const recentOrders = await Order.find()
+        .sort({ _id: -1 })
+        .limit(limit)
+        .populate("user")
+        .populate("orderItems.product")
+        .exec();
+      res.status(200).send({
+        message: `${limit} Orders Founded`,
+        data: recentOrders,
+      });
+    } else {
+      res.status(400).send({
+        message: `field 'limit' undefined`,
+        example: {
+          limit: 10
+        }
+      });
+    }
+  } catch (error) {
+    throw new Error(error);
+  }
+});
 
 const getYearlyTotalOrders = asyncHandler(async (req, res) => {
   const months = [
@@ -896,6 +923,7 @@ module.exports = {
   getAllOrders,
   updateOrderStatus,
   getMonthWiseOrderIncome,
+  getRecentOrders,
   // getMonthWiseOrderCount,
   getYearlyTotalOrders,
   removeProductFromCart,

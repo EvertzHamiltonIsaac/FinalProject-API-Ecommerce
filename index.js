@@ -9,6 +9,7 @@ const colorRouter = require("./src/MVC/routes/colorRouter");
 const couponRouter = require("./src/MVC/routes/couponRouter");
 const enquiryRouter = require("./src/MVC/routes/enquiryRouter");
 const paymentRouter = require("./src/MVC/routes/paymentRouter");
+const ordersRouter = require("./src/MVC/routes/ordersRouter");
 const uploadImgRouter = require("./src/MVC/routes/uploadImgRouter");
 //* Routers
 
@@ -47,6 +48,7 @@ app.use(`${baseURL}`, colorRouter);
 app.use(`${baseURL}`, enquiryRouter);
 app.use(`${baseURL}`, couponRouter);
 app.use(`${baseURL}`, paymentRouter);
+app.use(`${baseURL}`, ordersRouter);
 app.use(`${baseURL}`, uploadImgRouter);
 
 //* Handle Errors using middlewares.

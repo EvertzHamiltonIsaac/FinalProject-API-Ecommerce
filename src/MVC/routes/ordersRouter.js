@@ -2,8 +2,10 @@ const express = require("express");
 const router = express.Router();
 const { authMiddleware, isAdmin } = require("../../middlewares/authMiddleware");
 const {
-    getRecentOrders
+    // getRecentOrders,
   } = require("../controllers/orders.controller");
-  
-router.get("/order/get-recent-orders", authMiddleware, isAdmin,  getRecentOrders);
+
+// router.get("/order/recent-orders", authMiddleware, isAdmin,  getRecentOrders);
+
+module.exports = router;
 

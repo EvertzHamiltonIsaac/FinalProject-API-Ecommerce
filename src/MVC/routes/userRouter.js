@@ -23,6 +23,7 @@ const {
   userCart,
   getUserCart,
   getUserOrders,
+  getRecentOrders,
   // emptyCart,
   // applyCoupon,
   createOrder,
@@ -77,6 +78,13 @@ router.get(
   authMiddleware,
   isAdmin,
   getYearlyTotalOrders
+);
+
+router.get(
+  "/order/get-recent",
+  authMiddleware,
+  isAdmin,
+  getRecentOrders
 );
 
 router.get(
