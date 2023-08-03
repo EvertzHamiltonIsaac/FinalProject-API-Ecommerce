@@ -655,7 +655,7 @@ const getOrderById = asyncHandler(async (req, res) => {
   }
 });
 
-const getUserOrders = asyncHandler(async () => {
+const getUserOrders = asyncHandler(async (req, res) => {
   const { _id } = req.user;
 
   try {
