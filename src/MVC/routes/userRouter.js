@@ -81,7 +81,7 @@ router.get(
 );
 
 router.get(
-  "/order/get-recent",
+  "/order/get-recent/:limit",
   authMiddleware,
   isAdmin,
   getRecentOrders

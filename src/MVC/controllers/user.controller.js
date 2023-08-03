@@ -817,7 +817,7 @@ const getMonthWiseOrderIncome = asyncHandler(async (req, res) => {
 //   console.log(endDate);
 // });
 const getRecentOrders = asyncHandler(async (req, res) => {
-  const { limit } = req.body;
+  const { limit } = req.params;
   try {
     if (limit) {
       const recentOrders = await Order.find()
