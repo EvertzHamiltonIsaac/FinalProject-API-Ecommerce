@@ -10,6 +10,7 @@ const jwt = require("jsonwebtoken");
 const sendEmail = require("../controllers/email.controller");
 const crypto = require("crypto");
 const uniqid = require("uniqid");
+const getHTMLWithURL = require("../../utils/mailHtml");
 
 // TODO: Controllers For Auth.
 //* Register ✅
@@ -180,35 +181,36 @@ const RefreshToken = asyncHandler(async (req, res) => {
   });
 });
 
-//* Forgot Password ⚠️
+//! Forgot Password Working Here⚠️
 const forgotPasswordToken = asyncHandler(async (req, res) => {
   const { email } = req.body;
-
-  const user = await User.findOne({ email });
-
-  if (!user) {
-    res
-      .status(404)
-      .send({ status: 404, message: " Token Expired, Try again later" });
-  }
-
+  const user = await User.findOne({ email }).populate("cart");
+  // console.log(user);
+  if (!user) throw new Error("User not found with ths email");
   try {
     const token = await user.createPasswordResetToken();
     await user.save();
-    const resetURL = `Hi, Please follow this link to reset your password. This link is valid till 10 minutes from now. < href='http://127.0.0.1:3000/api/v1/user/updatePassword/${token}'>Click Here</>`;
+
+    let URL = ''
+    if (user.role === "user") {
+      URL = 'Link del Usuario';
+    } else {
+      URL = 'Link del Admin';
+    }
 
     const data = {
       to: email,
       text: "Hey User",
       subject: "Forgot Password Link",
-      htm: '<div>Hola</div>',
+      html: getHTMLWithURL(URL),
     };
 
     sendEmail(data);
 
     res.status(200).send({ message: "Token de Acceso Generado", data: token });
   } catch (error) {
-    res.status(404).send({ status: 404, message: error.message });
+    // res.status(404).send({ status: 404, message: error.message });
+    throw new Error(error);
   }
 });
 
@@ -567,7 +569,7 @@ const createOrder = asyncHandler(async (req, res) => {
           data: order,
           cartRemoved: cart,
         });
-      } else{
+      } else {
         res.status(400).send({
           message: "Cart Not Deleted",
         });
