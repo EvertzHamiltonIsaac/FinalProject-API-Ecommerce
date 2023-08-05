@@ -23,15 +23,16 @@ padding: 15px;
 const btn_container = `
 background-color: #021e43;
 color: white;
-padding: 20px;
+padding: 15px;
 border-radius: 20px;
-width: 50%;
+width: 40%;
 text-align: center;
 font-size: large;
 font-weight: 600;
 margin: auto;
 cursor: pointer;
 `;
+
 const container = `
 display: flex;
 justify-content: center;
@@ -46,7 +47,7 @@ text-align: center;
 //TODO: HTML
 
 const getHTMLWithURL = (url) => {
-return `
+  return `
 <div style="${container}">
     <div style="${message_mail_container}">
         <div >
@@ -58,16 +59,18 @@ return `
         <div style="${info_container}">
             <h3 style="text-align: center; margin-bottom: 10px;">Forgot Password Mail</h3>
             <div style="margin-top: 10px;">Dear Customer: </div>
-            <div style="margin-top: 10px;">
+            <div style="margin-top: 10px; margin-bottom: 20px;">
                 You have requested to reset your password and an email
                 to
                 reset it has been sent to you. Click the button below to
                 complete your password reset.
             </div>
-            <div style="margin-top: 20px; margin-bottom: 10px;" style="${btn_container}">
-                Reset Password
-            </div>
-            <div style="margin-top: 10px; margin-bottom: 10px;">
+            <a style="text-decoration: none; color: white:" href="https://plataformavirtual.itla.edu.do/login/index.php">
+                <div style="${btn_container}">
+                    Reset Password
+                </div>
+            </a>
+            <div style="margin-top: 20px; margin-bottom: 10px;">
                 If the above button does not work, please enter the
                 address
                 next in your browser.

@@ -184,9 +184,10 @@ const RefreshToken = asyncHandler(async (req, res) => {
 //! Forgot Password Working Here⚠️
 const forgotPasswordToken = asyncHandler(async (req, res) => {
   const { email } = req.body;
-  const user = await User.findOne({ email }).populate("cart");
-  // console.log(user);
+
+  const user = await User.findOne({ email });
   if (!user) throw new Error("User not found with ths email");
+
   try {
     const token = await user.createPasswordResetToken();
     await user.save();
