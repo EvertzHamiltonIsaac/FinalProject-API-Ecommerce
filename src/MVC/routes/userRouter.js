@@ -76,7 +76,7 @@ router.get(
 );
 
 router.get("/user/:id", authMiddleware, isAdmin, getUser);
-router.put("/user/updateUser", authMiddleware, isAdmin, updateUser);
+router.put("/user/updateUser", authMiddleware, updateUser);
 // router.delete("/user/emptyCart/", authMiddleware, emptyCart);
 router.delete(
   "/user/deleteFromCart/:cartItemId",
