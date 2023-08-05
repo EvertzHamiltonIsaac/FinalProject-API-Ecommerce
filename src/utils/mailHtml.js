@@ -46,7 +46,7 @@ text-align: center;
 
 //TODO: HTML
 
-const getHTMLWithURL = (url) => {
+const getHTMLWithURL = (link) => {
   return `
 <div style="${container}">
     <div style="${message_mail_container}">
@@ -65,7 +65,7 @@ const getHTMLWithURL = (url) => {
                 reset it has been sent to you. Click the button below to
                 complete your password reset.
             </div>
-            <a style="text-decoration: none; color: white:" href="https://plataformavirtual.itla.edu.do/login/index.php">
+            <a style="text-decoration: none; color: white:" href="${link}">
                 <div style="${btn_container}">
                     Reset Password
                 </div>
@@ -75,11 +75,11 @@ const getHTMLWithURL = (url) => {
                 address
                 next in your browser.
             </div>
-            <div style="width: 100%;">
-                <a href style="text-decoration: none;">
-                    ${url}
-                </a>
-            </div>
+            <a href style="text-decoration: none;">
+                <div style="width: 100%;">
+                    ${link}
+                </div>
+            </a>
             <div style="margin-top: 10px; padding-bottom: 10px;">
                 This password reset link is only
                 valid for 10 minutes after receiving this email

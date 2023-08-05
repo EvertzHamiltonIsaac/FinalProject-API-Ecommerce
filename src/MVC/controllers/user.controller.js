@@ -194,9 +194,9 @@ const forgotPasswordToken = asyncHandler(async (req, res) => {
 
     let URL = ''
     if (user.role === "user") {
-      URL = 'Link del Usuario';
+      URL = `${process.env.WEB_RESETPASSWORD_PAGE}/${token}`;
     } else {
-      URL = 'Link del Admin';
+      URL = `${process.env.ADMIN_RESETPASSWORD_PAGE}/${token}`;
     }
 
     const data = {
