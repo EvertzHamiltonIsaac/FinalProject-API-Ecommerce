@@ -22,18 +22,21 @@ const {
   saveAddress,
   userCart,
   getUserCart,
+  getUserOrders,
+  getRecentOrders,
   // emptyCart,
   // applyCoupon,
   createOrder,
   addToWishList,
   // getOrders,
-  // getAllOrders,
-  // updateOrderStatus,
+  getAllOrders,
+  updateOrderStatus,
   getMonthWiseOrderIncome,
   // getMonthWiseOrderCount,
   getYearlyTotalOrders,
   removeProductFromCart,
   updateProductQuantityFromCart,
+  getOrderById,
 } = require("../controllers/user.controller");
 
 // TODO: Auth
@@ -57,9 +60,10 @@ router.get("/user/", authMiddleware, getWishList);
 router.get("/user/cart", authMiddleware, getUserCart);
 router.post("/user/create-cart", authMiddleware, userCart);
 // router.post("/user/applyCoupon",authMiddleware, applyCoupon);
-router.post("/user/cart/create-order", authMiddleware, createOrder);
+router.post("/order/create-order", authMiddleware, createOrder);
 // router.get("/user/cart/get-orders",authMiddleware, getOrders);
-// router.get("/user/cart/get-all-orders",authMiddleware, getAllOrders);
+router.get("/order/get-all-orders", authMiddleware, isAdmin, getAllOrders);
+router.get("/order/get-my-orders", authMiddleware, getUserOrders);
 
 router.get(
   "/order/get-month-wise-order-income",
@@ -75,6 +79,22 @@ router.get(
   getYearlyTotalOrders
 );
 
+router.get(
+  "/order/get-recent/:limit",
+  authMiddleware,
+  isAdmin,
+  getRecentOrders
+);
+
+router.get("/order/:id", authMiddleware, isAdmin, getOrderById);
+
+router.put(
+  "/order/updateOrder/:id",
+  authMiddleware,
+  isAdmin,
+  updateOrderStatus
+);
+
 router.get("/user/:id", authMiddleware, isAdmin, getUser);
 router.put("/user/updateUser", authMiddleware, updateUser);
 // router.delete("/user/emptyCart/", authMiddleware, emptyCart);
@@ -83,14 +103,21 @@ router.delete(
   authMiddleware,
   removeProductFromCart
 );
-router.delete(
-  "/user/updateFromCart/:cartItemId/:newQuantity",
+
+router.put(
+  "/user/updateFromCart/:cartItemId",
   authMiddleware,
   updateProductQuantityFromCart
 );
+
+// router.put(
+//   "/user/updateFromCart/:cartItemId",
+//   authMiddleware,
+//   updateProductQuantityFromCart2
+// );
+
 router.put("/user/blockUser/:id", authMiddleware, isAdmin, blockUser);
 router.put("/user/unblockUser/:id", authMiddleware, isAdmin, unblockUser);
-// router.put("/user/updateOrder/:id",authMiddleware, isAdmin ,updateOrderStatus);
 router.delete("/user/deleteUser/:id", deleteUser);
 
 router.put("/user/updatePassword", authMiddleware, updatePassword);

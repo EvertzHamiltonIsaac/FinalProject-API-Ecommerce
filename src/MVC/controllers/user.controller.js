@@ -10,6 +10,7 @@ const jwt = require("jsonwebtoken");
 const sendEmail = require("../controllers/email.controller");
 const crypto = require("crypto");
 const uniqid = require("uniqid");
+const getHTMLWithURL = require("../../utils/mailHtml");
 
 // TODO: Controllers For Auth.
 //* Register ✅
@@ -180,29 +181,37 @@ const RefreshToken = asyncHandler(async (req, res) => {
   });
 });
 
-//* Forgot Password ⚠️
+//! Forgot Password Working Here⚠️
 const forgotPasswordToken = asyncHandler(async (req, res) => {
   const { email } = req.body;
+
   const user = await User.findOne({ email });
-  if (!user) {
-    res
-      .status(404)
-      .send({ status: 404, message: " Token Expired, Try again later" });
-  }
+  if (!user) throw new Error("User not found with ths email");
+
   try {
     const token = await user.createPasswordResetToken();
     await user.save();
-    const resetURL = `Hi, Please follow this link to reset your password. This link is valid till 10 minutes from now. < href='http://127.0.0.1:3000/api/v1/user/updatePassword/${token}'>Click Here</>`;
+
+    let URL = ''
+    if (user.role === "user") {
+      URL = `${process.env.WEB_RESETPASSWORD_PAGE}/${token}`;
+    } else {
+      URL = `${process.env.ADMIN_RESETPASSWORD_PAGE}/${token}`;
+    }
+
     const data = {
       to: email,
       text: "Hey User",
       subject: "Forgot Password Link",
-      htm: resetURL,
+      html: getHTMLWithURL(URL),
     };
+
     sendEmail(data);
+
     res.status(200).send({ message: "Token de Acceso Generado", data: token });
   } catch (error) {
-    res.status(404).send({ status: 404, message: error.message });
+    // res.status(404).send({ status: 404, message: error.message });
+    throw new Error(error);
   }
 });
 
@@ -483,19 +492,53 @@ const removeProductFromCart = asyncHandler(async (req, res) => {
   }
 });
 
+// const updateProductQuantityFromCart = asyncHandler(async (req, res) => {
+//   const { _id } = req.user;
+//   const { cartItemId, newQuantity } = req.params;
+//   validateMongoId(_id);
+//   try {
+//     const cartItem = await Cart.findOne({ userId: _id, _id: cartItemId });
+//     cartItem.quantity = newQuantity;
+//     cartItem.save();
+//     res.status(200).send({ cartItem });
+//   } catch (error) {
+//     throw new Error(error);
+//   }
+// });
+
 const updateProductQuantityFromCart = asyncHandler(async (req, res) => {
   const { _id } = req.user;
-  const { cartItemId, newQuantity } = req.params;
+  const { cartItemId } = req.params;
+  const { newQuantity } = req.body;
+
   validateMongoId(_id);
+  validateMongoId(cartItemId);
+
   try {
     const cartItem = await Cart.findOne({ userId: _id, _id: cartItemId });
-    cartItem.quantity = newQuantity;
-    cartItem.save();
-    res.status(200).send({ cartItem });
+    if (cartItem) {
+      cartItem.quantity = newQuantity;
+      cartItem.save();
+    }
+    res
+      .status(200)
+      .send({ message: "Quantity Updated", success: true, data: cartItem });
   } catch (error) {
     throw new Error(error);
   }
 });
+
+// const emptyCart = asyncHandler(async (req, res) => {
+//   const { _id } = req.user;
+
+//   try {
+//     const user = await User.findOne({ _id });
+
+//     res.status(200).send({ message: "Cart Empty Successfully", data: cart });
+//   } catch (error) {
+//     throw new Error(error);
+//   }
+// });
 
 const createOrder = asyncHandler(async (req, res) => {
   const {
@@ -505,7 +548,9 @@ const createOrder = asyncHandler(async (req, res) => {
     totalPriceAfterDiscount,
     paymentInfo,
   } = req.body;
+
   const { _id } = req.user;
+  validateMongoId(_id);
 
   try {
     const order = await Order.create({
@@ -516,26 +561,30 @@ const createOrder = asyncHandler(async (req, res) => {
       paymentInfo,
       user: _id,
     });
-    res
-      .status(200)
-      .send({ message: "Order Created Succesfully.", data: order });
+
+    if (order) {
+      const cart = await Cart.findOneAndRemove({ userId: _id });
+      if (cart) {
+        res.status(200).send({
+          message: "Order Created Succesfully.",
+          data: order,
+          cartRemoved: cart,
+        });
+      } else {
+        res.status(400).send({
+          message: "Cart Not Deleted",
+        });
+      }
+    } else {
+      res.status(400).send({
+        message: "Error in create order",
+      });
+    }
   } catch (error) {
     // res.status(400).send({message: error})
     throw new Error(error);
   }
 });
-// const emptyCart = asyncHandler(async (req, res) => {
-//   const { _id } = req.user;
-//   validateMongoId(_id);
-//   try {
-//     const user = await User.findOne({ _id });
-//     const cart = await Cart.findOneAndRemove({ orderBy: _id });
-
-//     res.status(200).send({ message: "Cart Empty Successfully", data: cart });
-//   } catch (error) {
-//     throw new Error(error);
-//   }
-// });
 
 // const applyCoupon = asyncHandler(async (req, res) => {
 //   const { coupon } = req.body;
@@ -614,59 +663,78 @@ const createOrder = asyncHandler(async (req, res) => {
 //   }
 // });
 
-// const getOrders = asyncHandler(async (req, res) => {
-//   const { _id } = req.user;
-//   validateMongoId(_id);
+const getOrderById = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  validateMongoId(id);
 
-//   try {
-//     const userOrders = await Order.findOne({ orderBy: _id })
-//       .populate("products.product")
-//       .exec();
-//     res
-//       .status(200)
-//       .send({ message: "Order Founded Successfully", data: userOrders });
-//   } catch (error) {
-//     throw new Error(error);
-//   }
-// });
+  try {
+    const order = await Order.findById(id)
+      .populate("user")
+      .populate("orderItems.product")
+      .populate("orderItems.color")
+      .exec();
+    res
+      .status(200)
+      .send({ message: "Order Founded Successfully", data: order });
+  } catch (error) {
+    throw new Error(error);
+  }
+});
 
-// const getAllOrders = asyncHandler(async (req, res) => {
-//   try {
-//     const AllUserOrders = await Order.find()
-//       .populate("products.product")
-//       .populate("orderBy")
-//       .exec();
-//     res.status(200).send({
-//       message: "All Orders Founded Successfully",
-//       data: AllUserOrders,
-//     });
-//   } catch (error) {
-//     throw new Error(error);
-//   }
-// });
+const getUserOrders = asyncHandler(async (req, res) => {
+  const { _id } = req.user;
+  validateMongoId(_id);
 
-// const updateOrderStatus = asyncHandler(async (req, res) => {
-//   const { status } = req.body;
-//   const { id } = req.params;
-//   validateMongoId(id);
-//   try {
-//     const updateOrderStatus = await Order.findByIdAndUpdate(
-//       id,
-//       {
-//         orderStatus: status,
-//         paymentIntent: {
-//           status: status,
-//         },
-//       },
-//       { new: true }
-//     );
-//     res
-//       .status(200)
-//       .send({ message: "Order Updated Successfully", data: updateOrderStatus });
-//   } catch (error) {
-//     throw new Error(error);
-//   }
-// });
+  try {
+    const userOrders = await Order.find({ user: _id })
+      .populate("user")
+      .populate("orderItems.product")
+      .populate("orderItems.color")
+      .exec();
+
+    res.status(200).send({ message: "User Order Founded", data: userOrders });
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
+const getAllOrders = asyncHandler(async (req, res) => {
+  try {
+    const AllUserOrders = await Order.find()
+      .populate("user")
+      .populate("orderItems.product")
+      .exec();
+    res.status(200).send({
+      message: "All Orders Founded Successfully",
+      data: AllUserOrders,
+    });
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
+const updateOrderStatus = asyncHandler(async (req, res) => {
+  const { status } = req.body;
+  const { id } = req.params;
+  validateMongoId(id);
+  try {
+    const updateOrderStatus = await Order.findByIdAndUpdate(
+      id,
+      {
+        orderStatus: status,
+        paymentIntent: {
+          status: status,
+        },
+      },
+      { new: true }
+    );
+    res
+      .status(200)
+      .send({ message: "Order Updated Successfully", data: updateOrderStatus });
+  } catch (error) {
+    throw new Error(error);
+  }
+});
 
 const getMonthWiseOrderIncome = asyncHandler(async (req, res) => {
   const monthsName = [
@@ -775,6 +843,33 @@ const getMonthWiseOrderIncome = asyncHandler(async (req, res) => {
 //   console.log(endDate);
 // });
 
+const getRecentOrders = asyncHandler(async (req, res) => {
+  const { limit } = req.params;
+  try {
+    if (limit) {
+      const recentOrders = await Order.find()
+        .sort({ _id: -1 })
+        .limit(limit)
+        .populate("user")
+        .populate("orderItems.product")
+        .exec();
+      res.status(200).send({
+        message: `${limit} Orders Founded`,
+        data: recentOrders,
+      });
+    } else {
+      res.status(400).send({
+        message: `field 'limit' undefined`,
+        example: {
+          limit: 10,
+        },
+      });
+    }
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
 const getYearlyTotalOrders = asyncHandler(async (req, res) => {
   const months = [
     "January",
@@ -852,11 +947,15 @@ module.exports = {
   // applyCoupon,
   // createOrder,
   // getOrders,
-  // getAllOrders,
-  // updateOrderStatus,
+  getAllOrders,
+  updateOrderStatus,
   getMonthWiseOrderIncome,
+  getRecentOrders,
   // getMonthWiseOrderCount,
   getYearlyTotalOrders,
   removeProductFromCart,
   updateProductQuantityFromCart,
+  getOrderById,
+  getUserOrders,
+  // updateProductQuantityFromCart2
 };

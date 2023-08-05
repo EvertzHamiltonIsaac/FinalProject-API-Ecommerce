@@ -1,26 +1,35 @@
-const RazorPay = require("razorpay");
-// const instance = new RazorPay({ key_id: "", key_secret: "" });
-const instance = { key_id: "", key_secret: ""} //! Codigo Temporal.
+const { Client, Environment } = require("square");
+const JSONBig = require("json-bigint");
+
+const client = new Client({
+  accessToken:
+    "EAAAEBNM96rgPw1I_bzZE-YISf4VoCSlv3aU134fkxuxNKao5_UfVS4ag8kqEQLW",
+  environment: Environment.Sandbox,
+});
 
 const checkout = async (req, res) => {
-  const option = {
-    amount: 50000,
-    currency: "USD",
-  };
-  try {
-    const order = await instance.orders.create(option);
-    res.status(200).send({ success: true, order: order });
-  } catch (error) {
-    throw new Error(error);
-  }
+  client.paymentsApi
+    .createPayment(req.body)
+    .then((paymentInfo) => {
+      res.status(200).send({
+        message: "Pay Done Successfully",
+        paymentInformation: JSONBig.parse(
+          JSONBig.stringify(paymentInfo.result.payment)
+        ),
+      });
+    })
+    .catch((error) => {
+      res.status(400).send({message: 'error with fields'})
+      throw new Error(error);
+    });
 };
 
 const paymentVerification = async (req, res) => {
-    const {razorpayOrderId, razorpayPaymentId} = req.body;
-    res.status(200).send({razorpayOrderId, razorpayPaymentId});
-  };
+  const { razorpayOrderId, razorpayPaymentId } = req.body;
+  res.status(200).send({ razorpayOrderId, razorpayPaymentId });
+};
 
 module.exports = {
-    checkout,
-    paymentVerification
-}
+  checkout,
+  paymentVerification,
+};
